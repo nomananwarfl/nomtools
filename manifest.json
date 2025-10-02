@@ -1,0 +1,11 @@
+{
+  "name": "ToolsHub",
+  "short_name": "ToolsHub",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    { "src": "/assets/icons/favicon.ico", "sizes": "48x48 64x64 128x128", "type": "image/x-icon" }
+  ]
+}

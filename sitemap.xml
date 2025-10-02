@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://toolshub.example.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url><loc>https://toolshub.example.com/tools/word-counter.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/password-generator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/qr-generator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/image-resizer.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/unit-converter.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/text-case-converter.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/lorem-ipsum.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/json-formatter.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/base64-tool.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/percentage-calculator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/age-calculator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/color-picker.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/random-number.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/timer-stopwatch.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/text-diff.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/markdown-to-html.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/image-to-base64.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/favicon-generator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/html-encoder.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/css-minifier.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/js-minifier.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/hash-generator.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/url-shortener.html</loc></url>
+  <url><loc>https://toolshub.example.com/tools/invoice-generator.html</loc></url>
+</urlset>
