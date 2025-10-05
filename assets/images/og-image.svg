@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <g fill="#ffffff">
+    <text x="60" y="220" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="72" font-weight="800">ToolsHub</text>
+    <text x="60" y="300" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="36">Free Online Tools for Everyone</text>
+    <text x="60" y="360" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="26" opacity="0.9">Word Counter · Password Generator · QR Generator · Image Resizer · Unit Converter</text>
+  </g>
+  <rect x="60" y="420" width="480" height="80" rx="12" fill="#93c5fd" opacity="0.2"/>
+  <text x="80" y="472" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="28" fill="#ffffff" opacity="0.95">https://toolshub.example.com</text>
+</svg>
