@@ -1,0 +1,135 @@
+// Main JS: search, navigation, theme toggle, analytics stub, and tools registry
+(function(){
+  const d = document;
+
+  // Theme toggle
+  const root = d.documentElement;
+  const themeToggle = d.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme === 'dark') root.classList.add('dark');
+  if(themeToggle){
+    themeToggle.textContent = root.classList.contains('dark') ? '☀️' : '🌙';
+    themeToggle.addEventListener('click',()=>{
+      root.classList.toggle('dark');
+      const dark = root.classList.contains('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      themeToggle.textContent = dark ? '☀️' : '🌙';
+    });
+  }
+
+  // Tools Registry (Phase 1 implements first 5 fully)
+  const TOOLS = [
+    { id:'word-counter', name:'Word Counter', description:'Count words, characters, and paragraphs.', category:'text', href:'tools/word-counter.html' },
+    { id:'password-generator', name:'Password Generator', description:'Create secure passwords with custom options.', category:'text', href:'tools/password-generator.html' },
+    { id:'qr-generator', name:'QR Code Generator', description:'Generate a QR code from text or URL.', category:'image', href:'tools/qr-generator.html' },
+    { id:'image-resizer', name:'Image Resizer', description:'Resize images client-side and download.', category:'image', href:'tools/image-resizer.html' },
+    { id:'unit-converter', name:'Unit Converter', description:'Convert length, weight, and temperature.', category:'utility', href:'tools/unit-converter.html' },
+
+    // Placeholders for upcoming tools (Phase 2)
+    { id:'text-case-converter', name:'Text Case Converter', description:'UPPER, lower, Title, CamelCase.', category:'text', href:'tools/text-case-converter.html' },
+    { id:'lorem-ipsum', name:'Lorem Ipsum Generator', description:'Generate placeholder text.', category:'text', href:'tools/lorem-ipsum.html' },
+    { id:'text-diff', name:'Text Difference Checker', description:'Compare two texts to see differences.', category:'text', href:'tools/text-diff.html' },
+    { id:'url-shortener', name:'URL Shortener (Simulated)', description:'Simulate URL shortening.', category:'text', href:'tools/url-shortener.html' },
+    { id:'md-to-html', name:'Markdown to HTML', description:'Convert Markdown to HTML.', category:'text', href:'tools/markdown-to-html.html' },
+
+    { id:'color-picker', name:'Color Picker', description:'Pick colors in HEX, RGB, HSL.', category:'image', href:'tools/color-picker.html' },
+    { id:'img-to-base64', name:'Image to Base64', description:'Convert images to Base64.', category:'image', href:'tools/image-to-base64.html' },
+    { id:'favicon-generator', name:'Favicon Generator', description:'Create favicons from images.', category:'image', href:'tools/favicon-generator.html' },
+
+    { id:'json-formatter', name:'JSON Formatter', description:'Format and validate JSON.', category:'developer', href:'tools/json-formatter.html' },
+    { id:'html-encoder', name:'HTML Encoder/Decoder', description:'Encode/Decode HTML entities.', category:'developer', href:'tools/html-encoder.html' },
+    { id:'css-minifier', name:'CSS Minifier', description:'Minify CSS code.', category:'developer', href:'tools/css-minifier.html' },
+    { id:'js-minifier', name:'JavaScript Minifier', description:'Minify JS code.', category:'developer', href:'tools/js-minifier.html' },
+    { id:'cps-tool', name:'Clicks Per Second (CPS)', description:'Test your clicking speed across durations.', category:'developer', href:'tools/cps-tool.html' },
+    { id:'hash-generator', name:'Hash Generator', description:'MD5, SHA1, SHA256 (client-side).', category:'developer', href:'tools/hash-generator.html' },
+    { id:'base64-tool', name:'Base64 Encoder/Decoder', description:'Encode/Decode Base64.', category:'developer', href:'tools/base64-tool.html' },
+
+    { id:'percentage-calculator', name:'Percentage Calculator', description:'Compute percentages easily.', category:'utility', href:'tools/percentage-calculator.html' },
+    { id:'age-calculator', name:'Age Calculator', description:'Calculate age from birthdate.', category:'utility', href:'tools/age-calculator.html' },
+    { id:'random-number', name:'Random Number Generator', description:'Generate random numbers.', category:'utility', href:'tools/random-number.html' },
+    { id:'timer-stopwatch', name:'Timer/Stopwatch', description:'Online timer and stopwatch.', category:'utility', href:'tools/timer-stopwatch.html' },
+    { id:'invoice-generator', name:'Invoice Generator', description:'Create simple invoices.', category:'utility', href:'tools/invoice-generator.html' }
+  ];
+
+  // Render tools into category grids
+  function renderTools(filter=""){
+    const grids = {
+      text: d.getElementById('grid-text'),
+      image: d.getElementById('grid-image'),
+      developer: d.getElementById('grid-developer'),
+      utility: d.getElementById('grid-utility')
+    };
+    Object.values(grids).forEach(g=>{ if(g) g.innerHTML=''; });
+    const q = filter.trim().toLowerCase();
+    TOOLS.filter(t=>!q || t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)).forEach(tool=>{
+      const card = d.createElement('article');
+      card.className = 'tool-card';
+      card.innerHTML = `
+        <h3>${tool.name}</h3>
+        <p>${tool.description}</p>
+        <div class="actions">
+          <a class="btn-primary" href="${tool.href}" aria-label="Open ${tool.name}">Open</a>
+          <button class="btn-secondary" data-tool-id="${tool.id}" aria-label="Save ${tool.name}">Save</button>
+        </div>
+      `;
+      const grid = grids[tool.category];
+      if(grid) grid.appendChild(card);
+    });
+  }
+
+  // Search
+  function searchTools(){
+    const input = d.getElementById('searchInput');
+    renderTools(input ? input.value : '');
+  }
+  window.searchTools = searchTools;
+  const searchBtn = d.getElementById('searchBtn');
+  if(searchBtn){
+    searchBtn.addEventListener('click', searchTools);
+  }
+  const searchInput = d.getElementById('searchInput');
+  if(searchInput){
+    searchInput.addEventListener('input', (e)=> renderTools(e.target.value));
+  }
+
+  // Smooth scroll for nav anchors
+  d.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const id = a.getAttribute('href');
+      if(id.length > 1){
+        e.preventDefault();
+        d.querySelector(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+        history.replaceState(null, '', id);
+      }
+    });
+  });
+
+  // Simple analytics stub: count clicks on tool cards (localStorage)
+  d.addEventListener('click', (e)=>{
+    const a = e.target.closest('a[href]');
+    if(!a) return;
+    const href = a.getAttribute('href');
+    if(href && href.startsWith('tools/')){
+      const key = `analytics:${href}`;
+      const n = parseInt(localStorage.getItem(key)||'0',10) + 1;
+      localStorage.setItem(key, String(n));
+    }
+  });
+
+  // Initial render
+  renderTools('');
+  // Email helper used by header topbar
+  window.openEmail = function(to, subject){
+    try{
+      const s = subject ? encodeURIComponent(subject) : '';
+      const href = `mailto:${to}${s?`?subject=${s}`:''}`;
+      location.href = href;
+    }catch(e){ /* noop */ }
+  };
+  // Service worker registration (only on http/https)
+  try{
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+      navigator.serviceWorker.register('/sw.js');
+    }
+  }catch(e){ /* noop */ }
+})();
