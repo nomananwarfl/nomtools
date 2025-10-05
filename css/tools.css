@@ -1,0 +1,21 @@
+/* Tool-specific layout and components */
+.tool-container{max-width:1000px;margin:24px auto;padding:0 16px}
+.tool-header{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+.tool-header h1{margin:0 0 6px;color:var(--primary)}
+.tool-description{margin:0;color:#6b7280}
+
+.tool-interface{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:1024px){.tool-interface{grid-template-columns:1fr 1fr}}
+.input-section,.output-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.tool-actions{display:flex;gap:10px;flex-wrap:wrap}
+.textarea{width:100%;min-height:180px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);resize:vertical}
+.input, .select{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
+.label{display:block;margin:6px 0 6px;font-weight:600}
+.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:var(--border);padding:2px 6px;border-radius:6px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px}
+.small{font-size:.9rem;color:#6b7280}
+
+/* Header navigation for tools pages */
+.tool-nav{display:flex;align-items:center;gap:10px;margin:12px 0}
+.tool-nav a{color:var(--secondary);text-decoration:none}
+.tool-nav a:hover{text-decoration:underline}
