@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image to Base64 | ToolsHub</title>
+  <meta name="description" content="Convert images to Base64 data URLs directly in your browser." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/image-to-base64.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Image to Base64 | ToolsHub" />
+  <meta property="og:description" content="Convert images to Base64 data URLs safely and locally in your browser." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/image-to-base64.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image to Base64 | ToolsHub" />
+  <meta name="twitter:description" content="Convert images to Base64 data URLs safely and locally in your browser." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image to Base64",
+    "url": "https://toolshub.example.com/tools/image-to-base64.html",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "description": "Convert images to Base64 data URLs safely and locally in your browser."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Image to Base64</h1>
+      <p class="tool-description">Select an image to view and copy its Base64 data URL. All processing happens locally.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="file">Select Image</label>
+        <input id="file" class="input" type="file" accept="image/*" />
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="convert">Convert</button>
+          <button class="btn-secondary" id="copy">Copy Base64</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Preview</strong><br/>
+          <img id="preview" alt="preview" style="max-width:100%;margin-top:6px;border:1px solid var(--border);border-radius:8px" />
+        </div>
+        <label class="label" for="output" style="margin-top:8px">Base64 Data URL</label>
+        <textarea id="output" class="textarea" placeholder="data:image/...;base64,..."></textarea>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Select an image, click Convert to generate Base64. Copy the output as needed.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['file','preview','output','convert','copy','clear']
+      .reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    document.getElementById('convert').addEventListener('click', async()=>{
+      const f = els.file.files[0]; if(!f) return;
+      const url = await imageToDataURL(f);
+      els.output.value = url;
+      els.preview.src = url;
+    });
+    document.getElementById('copy').addEventListener('click', ()=> copyText(els.output));
+    document.getElementById('clear').addEventListener('click', ()=>{ els.file.value=''; els.output.value=''; els.preview.removeAttribute('src'); });
+  </script>
+</body>
+</html>

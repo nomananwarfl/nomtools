@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Minifier | ToolsHub</title>
+  <meta name="description" content="Minify JavaScript quickly in your browser. Removes comments and unnecessary whitespace (basic)." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/js-minifier.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="JavaScript Minifier | ToolsHub" />
+  <meta property="og:description" content="Minify JavaScript code client-side. Strip comments and whitespace instantly (basic)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/js-minifier.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="JavaScript Minifier | ToolsHub" />
+  <meta name="twitter:description" content="Minify JavaScript code client-side. Strip comments and whitespace instantly (basic)." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JavaScript Minifier",
+    "url": "https://toolshub.example.com/tools/js-minifier.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Minify JavaScript code client-side. Strip comments and whitespace instantly (basic)."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>JavaScript Minifier</h1>
+      <p class="tool-description">Paste JS and get a minified version. Client-side only, simplified minification.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="input">JavaScript Input</label>
+        <textarea id="input" class="textarea" placeholder="// Your JS here\nfunction greet(name) {\n  console.log('Hello, ' + name);\n}"></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="minify">Minify</button>
+          <button class="btn-secondary" id="copy-in">Copy Input</button>
+          <button class="btn-secondary" id="clear-in">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="output">Minified JS</label>
+        <textarea id="output" class="textarea" readonly></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copy-out">Copy Output</button>
+        </div>
+        <p class="small">Note: This is a basic minifier and may not handle all edge cases. For production, use a build tool.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Paste JavaScript, click Minify, and copy the result. Avoid code that relies on comment-preserved pragmas.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['input','output','minify','copy-in','clear-in','copy-out']
+      .reduce((a,id)=>{a[id.replace('-','_')]=document.getElementById(id);return a;},{});
+    els.minify.addEventListener('click', ()=>{ els.output.value = jsMinify(els.input.value||''); });
+    els.copy_in.addEventListener('click', ()=> copyText(els.input));
+    els.clear_in.addEventListener('click', ()=> { els.input.value=''; });
+    els.copy_out.addEventListener('click', ()=> copyText(els.output));
+  </script>
+</body>
+</html>

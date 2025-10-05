@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter | ToolsHub</title>
+  <meta name="description" content="Format and validate JSON with helpful error messages." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/json-formatter.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="JSON Formatter | ToolsHub" />
+  <meta property="og:description" content="Format and validate JSON in your browser with pretty-printed output." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/json-formatter.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="JSON Formatter | ToolsHub" />
+  <meta name="twitter:description" content="Format and validate JSON in your browser with pretty-printed output." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JSON Formatter",
+    "url": "https://toolshub.example.com/tools/json-formatter.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Format and validate JSON in your browser with pretty-printed output."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>JSON Formatter</h1>
+      <p class="tool-description">Paste JSON, format it, and validate structure instantly.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="input">Input JSON</label>
+        <textarea id="input" class="textarea" placeholder='{"hello": "world"}'></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="format">Format</button>
+          <button class="btn-secondary" id="copy-in">Copy Input</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="output">Formatted Output</label>
+        <textarea id="output" class="textarea" readonly></textarea>
+        <p id="status" class="small"></p>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copy-out">Copy Output</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Paste your JSON, click Format. If valid, you’ll get pretty-printed JSON. If not, you’ll see an error.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['input','output','status','format','copy-in','copy-out','clear'].reduce((a,id)=>{a[id.replace('-','_')]=document.getElementById(id);return a;},{});
+    function run(){
+      const res = jsonFormat(els.input.value);
+      if(res.ok){ els.output.value = res.output; els.status.textContent = 'Valid JSON ✔'; els.status.style.color = 'green'; }
+      else{ els.output.value = ''; els.status.textContent = res.error; els.status.style.color = 'crimson'; }
+    }
+    els.format.addEventListener('click', run);
+    els.copy_in.addEventListener('click', ()=> copyText(els.input));
+    els.copy_out.addEventListener('click', ()=> copyText(els.output));
+    els.clear.addEventListener('click', ()=> { els.input.value=''; els.output.value=''; els.status.textContent=''; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Favicon Generator | ToolsHub</title>
+  <meta name="description" content="Generate favicon images (16x16, 32x32) from any image right in your browser." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/favicon-generator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Favicon Generator | ToolsHub" />
+  <meta property="og:description" content="Create favicon PNGs at 16x16 and 32x32 sizes in your browser and download." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/favicon-generator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Favicon Generator | ToolsHub" />
+  <meta name="twitter:description" content="Create favicon PNGs at 16x16 and 32x32 sizes in your browser and download." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Favicon Generator",
+    "url": "https://toolshub.example.com/tools/favicon-generator.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Create favicon PNGs at 16x16 and 32x32 sizes in your browser and download."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Favicon Generator</h1>
+      <p class="tool-description">Create favicon PNGs (16x16 and 32x32). Download and add them to your site.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="file">Select Source Image</label>
+        <input id="file" class="input" type="file" accept="image/*" />
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="gen">Generate</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card">
+          <strong>16x16</strong>
+          <canvas id="c16" width="16" height="16" style="border:1px solid var(--border);border-radius:8px"></canvas>
+          <div class="tool-actions" style="margin-top:6px"><button class="btn-secondary" id="d16" disabled>Download 16x16</button></div>
+        </div>
+        <div class="card">
+          <strong>32x32</strong>
+          <canvas id="c32" width="32" height="32" style="border:1px solid var(--border);border-radius:8px"></canvas>
+          <div class="tool-actions" style="margin-top:6px"><button class="btn-secondary" id="d32" disabled>Download 32x32</button></div>
+        </div>
+        <p class="small">Note: This tool exports PNG favicons. For .ico multi-size files, include both PNGs or use an external ICO packager.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Choose an image (preferably square). Click Generate, then download the PNGs. Add to your site and reference in your HTML head.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['file','gen','clear'].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    const c16 = document.getElementById('c16');
+    const c32 = document.getElementById('c32');
+    const d16 = document.getElementById('d16');
+    const d32 = document.getElementById('d32');
+    let b16=null, b32=null, url16=null, url32=null;
+    function reset(){ if(url16){URL.revokeObjectURL(url16);url16=null;} if(url32){URL.revokeObjectURL(url32);url32=null;} b16=b32=null; d16.disabled=true; d32.disabled=true; [c16,c32].forEach(c=>{const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);}); }
+    async function drawSized(imgBitmap, canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(imgBitmap,0,0,canvas.width,canvas.height); return new Promise(res=> canvas.toBlob(res,'image/png',0.92)); }
+    els.gen.addEventListener('click', async()=>{
+      if(!els.file.files[0]) return;
+      reset();
+      const bmp = await createImageBitmap(els.file.files[0]);
+      b16 = await drawSized(bmp, c16);
+      b32 = await drawSized(bmp, c32);
+      url16 = URL.createObjectURL(b16); url32 = URL.createObjectURL(b32);
+      d16.disabled=false; d32.disabled=false;
+    });
+    d16.addEventListener('click', ()=>{ if(!b16) return; const a=document.createElement('a'); a.href=url16; a.download='favicon-16x16.png'; a.click(); });
+    d32.addEventListener('click', ()=>{ if(!b32) return; const a=document.createElement('a'); a.href=url32; a.download='favicon-32x32.png'; a.click(); });
+    els.clear.addEventListener('click', reset);
+  </script>
+</body>
+</html>

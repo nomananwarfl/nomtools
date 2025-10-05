@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Case Converter | ToolsHub</title>
+  <meta name="description" content="Convert text to upper, lower, title, sentence, camelCase, snake_case, and kebab-case." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/text-case-converter.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Text Case Converter | ToolsHub" />
+  <meta property="og:description" content="Convert text to Uppercase, lowercase, Title Case, sentence case, camelCase, snake_case, and kebab-case." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/text-case-converter.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Text Case Converter | ToolsHub" />
+  <meta name="twitter:description" content="Convert text to popular casing styles instantly." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Text Case Converter",
+    "url": "https://toolshub.example.com/tools/text-case-converter.html",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "Any",
+    "description": "Convert text to Uppercase, lowercase, Title Case, sentence case, camelCase, snake_case, and kebab-case."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Text Case Converter</h1>
+      <p class="tool-description">Quickly transform text into various casing styles.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="input">Input</label>
+        <textarea id="input" class="textarea" placeholder="Paste your text here..."></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copy-in">Copy Input</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>UPPERCASE</strong><br/><div id="upper" class="small"></div></div>
+        <div class="card"><strong>lowercase</strong><br/><div id="lower" class="small"></div></div>
+        <div class="card"><strong>Title Case</strong><br/><div id="title" class="small"></div></div>
+        <div class="card"><strong>Sentence case</strong><br/><div id="sentence" class="small"></div></div>
+        <div class="card"><strong>camelCase</strong><br/><div id="camel" class="small"></div></div>
+        <div class="card"><strong>snake_case</strong><br/><div id="snake" class="small"></div></div>
+        <div class="card"><strong>kebab-case</strong><br/><div id="kebab" class="small"></div></div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="copy-best">Copy Title Case</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Paste text in the input. The different cases update live. Use the Copy buttons to copy your desired output.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const input = document.getElementById('input');
+    const out = {
+      upper: document.getElementById('upper'),
+      lower: document.getElementById('lower'),
+      title: document.getElementById('title'),
+      sentence: document.getElementById('sentence'),
+      camel: document.getElementById('camel'),
+      snake: document.getElementById('snake'),
+      kebab: document.getElementById('kebab')
+    };
+    function update(){
+      const s = input.value || '';
+      out.upper.textContent = s.toUpperCase();
+      out.lower.textContent = s.toLowerCase();
+      out.title.textContent = toTitleCase(s);
+      out.sentence.textContent = toSentenceCase(s);
+      out.camel.textContent = toCamelCase(s);
+      out.snake.textContent = toSnakeCase(s);
+      out.kebab.textContent = toKebabCase(s);
+    }
+    input.addEventListener('input', update);
+    document.getElementById('copy-in').addEventListener('click', ()=> copyText(input));
+    document.getElementById('clear').addEventListener('click', ()=>{ input.value=''; update(); input.focus(); });
+    document.getElementById('copy-best').addEventListener('click', ()=> copyText(out.title.textContent));
+    update();
+  </script>
+</body>
+</html>

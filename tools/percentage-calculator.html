@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percentage Calculator | ToolsHub</title>
+  <meta name="description" content="Compute percentages: X% of Y, X is what percent of Y, and percent change." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/percentage-calculator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Percentage Calculator | ToolsHub" />
+  <meta property="og:description" content="Calculate X% of Y, find what percent X is of Y, and percent change with precision." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/percentage-calculator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Percentage Calculator | ToolsHub" />
+  <meta name="twitter:description" content="Calculate X% of Y, find what percent X is of Y, and percent change with precision." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Percentage Calculator",
+    "url": "https://toolshub.example.com/tools/percentage-calculator.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Compute X% of Y, percentages and percent change quickly and accurately."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Percentage Calculator</h1>
+      <p class="tool-description">Solve common percentage problems quickly.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <div class="card">
+          <strong>What is X% of Y?</strong>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px">
+            <div><label class="label" for="x1">X (%)</label><input id="x1" class="input" type="number" step="any" value="20" /></div>
+            <div><label class="label" for="y1">Y</label><input id="y1" class="input" type="number" step="any" value="150" /></div>
+          </div>
+          <div class="tool-actions" style="margin-top:8px"><button class="btn-primary" id="calc1">Calculate</button></div>
+          <div class="small">Result: <span id="r1">0</span></div>
+        </div>
+        <div class="card">
+          <strong>X is what percent of Y?</strong>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px">
+            <div><label class="label" for="x2">X</label><input id="x2" class="input" type="number" step="any" value="30" /></div>
+            <div><label class="label" for="y2">Y</label><input id="y2" class="input" type="number" step="any" value="120" /></div>
+          </div>
+          <div class="tool-actions" style="margin-top:8px"><button class="btn-primary" id="calc2">Calculate</button></div>
+          <div class="small">Result: <span id="r2">0</span>%</div>
+        </div>
+        <div class="card">
+          <strong>Percent change from A to B</strong>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px">
+            <div><label class="label" for="a3">A</label><input id="a3" class="input" type="number" step="any" value="80" /></div>
+            <div><label class="label" for="b3">B</label><input id="b3" class="input" type="number" step="any" value="100" /></div>
+          </div>
+          <div class="tool-actions" style="margin-top:8px"><button class="btn-primary" id="calc3">Calculate</button></div>
+          <div class="small">Result: <span id="r3">0</span>%</div>
+        </div>
+      </div>
+      <div class="output-section">
+        <p class="small">All results are computed precisely and displayed with up to 6 decimal places when needed.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Enter numbers and click Calculate for the section you need. Results appear below the button.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    function calc1(){ const x = parseFloat(document.getElementById('x1').value||'0'); const y = parseFloat(document.getElementById('y1').value||'0'); document.getElementById('r1').textContent = Number(whatIsXPercentOfY(x,y)).toFixed(6); }
+    function calc2(){ const x = parseFloat(document.getElementById('x2').value||'0'); const y = parseFloat(document.getElementById('y2').value||'0'); document.getElementById('r2').textContent = Number(percentOf(x,y)).toFixed(6); }
+    function calc3(){ const a = parseFloat(document.getElementById('a3').value||'0'); const b = parseFloat(document.getElementById('b3').value||'0'); document.getElementById('r3').textContent = Number(percentChange(a,b)).toFixed(6); }
+    document.getElementById('calc1').addEventListener('click', calc1);
+    document.getElementById('calc2').addEventListener('click', calc2);
+    document.getElementById('calc3').addEventListener('click', calc3);
+    calc1(); calc2(); calc3();
+  </script>
+</body>
+</html>

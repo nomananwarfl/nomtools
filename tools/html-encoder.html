@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Encoder/Decoder | ToolsHub</title>
+  <meta name="description" content="Encode and decode HTML entities safely in your browser." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/html-encoder.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="HTML Encoder/Decoder | ToolsHub" />
+  <meta property="og:description" content="Convert between raw text and HTML-encoded entities." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/html-encoder.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HTML Encoder/Decoder | ToolsHub" />
+  <meta name="twitter:description" content="Convert between raw text and HTML-encoded entities." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "HTML Encoder/Decoder",
+    "url": "https://toolshub.example.com/tools/html-encoder.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Convert between raw text and HTML-encoded entities."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>HTML Encoder/Decoder</h1>
+      <p class="tool-description">Convert between raw text and HTML-encoded entities.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="input">Input</label>
+        <textarea id="input" class="textarea" placeholder="Paste text or HTML here..."></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="encode">Encode →</button>
+          <button class="btn-primary" id="decode">← Decode</button>
+          <button class="btn-secondary" id="copy-in">Copy Input</button>
+          <button class="btn-secondary" id="clear-in">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="output">Output</label>
+        <textarea id="output" class="textarea" placeholder="Result..."></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copy-out">Copy Output</button>
+          <button class="btn-secondary" id="clear-out">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Paste text or HTML in Input. Click Encode to HTML-encode, or Decode to convert entities back to characters.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['input','output','encode','decode','copy-in','copy-out','clear-in','clear-out']
+      .reduce((a,id)=>{a[id.replace('-','_')]=document.getElementById(id);return a;},{});
+    els.encode.addEventListener('click', ()=>{ els.output.value = htmlEncode(els.input.value||''); });
+    els.decode.addEventListener('click', ()=>{ els.output.value = htmlDecode(els.input.value||''); });
+    els.copy_in.addEventListener('click', ()=> copyText(els.input));
+    els.copy_out.addEventListener('click', ()=> copyText(els.output));
+    els.clear_in.addEventListener('click', ()=>{ els.input.value=''; });
+    els.clear_out.addEventListener('click', ()=>{ els.output.value=''; });
+  </script>
+</body>
+</html>

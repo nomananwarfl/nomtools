@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator | ToolsHub</title>
+  <meta name="description" content="Calculate age from birthdate with years, months, and days." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/age-calculator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Age Calculator | ToolsHub" />
+  <meta property="og:description" content="Calculate exact age in years, months, and days." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/age-calculator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Age Calculator | ToolsHub" />
+  <meta name="twitter:description" content="Calculate exact age in years, months, and days." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Age Calculator",
+    "url": "https://toolshub.example.com/tools/age-calculator.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Calculate exact age in years, months, and days from a birthdate."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <p class="tool-description">Find your exact age in years, months, and days.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="dob">Birthdate</label>
+        <input id="dob" class="input" type="date" />
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="calc">Calculate</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Years:</strong> <span id="years">0</span></div>
+        <div class="card"><strong>Months:</strong> <span id="months">0</span></div>
+        <div class="card"><strong>Days:</strong> <span id="days">0</span></div>
+        <p id="note" class="small"></p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Select your birthdate and click Calculate. We compute the age as of today.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    function run(){
+      const dob = document.getElementById('dob').value;
+      const res = calculateAge(dob);
+      const yrs = document.getElementById('years');
+      const mos = document.getElementById('months');
+      const dys = document.getElementById('days');
+      const note = document.getElementById('note');
+      if(!res){ yrs.textContent = mos.textContent = dys.textContent = '0'; note.textContent = 'Please enter a valid date.'; return; }
+      yrs.textContent = res.years; mos.textContent = res.months; dys.textContent = res.days;
+      note.textContent = `As of today.`;
+    }
+    document.getElementById('calc').addEventListener('click', run);
+  </script>
+</body>
+</html>

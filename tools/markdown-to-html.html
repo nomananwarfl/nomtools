@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown to HTML | ToolsHub</title>
+  <meta name="description" content="Convert Markdown text to clean HTML using a simple, safe converter." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/markdown-to-html.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Markdown to HTML | ToolsHub" />
+  <meta property="og:description" content="Convert Markdown to HTML in your browser with live preview." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/markdown-to-html.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Markdown to HTML | ToolsHub" />
+  <meta name="twitter:description" content="Convert Markdown to HTML in your browser with live preview." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Markdown to HTML",
+    "url": "https://toolshub.example.com/tools/markdown-to-html.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Convert Markdown to HTML in your browser with live preview."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Markdown to HTML</h1>
+      <p class="tool-description">Paste Markdown and convert it to HTML. Basic syntax is supported.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="md">Markdown</label>
+        <textarea id="md" class="textarea" placeholder="# Hello\n\nThis is **bold** and this is *italic*.\n- item 1\n- item 2\n\n[link](https://example.com)"></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="convert">Convert</button>
+          <button class="btn-secondary" id="copy-md">Copy Markdown</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="htmlOut">HTML Output</label>
+        <textarea id="htmlOut" class="textarea" readonly></textarea>
+        <div class="card" style="margin-top:10px">
+          <strong>Preview</strong>
+          <div id="preview" style="margin-top:8px"></div>
+        </div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copy-html">Copy HTML</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Write or paste Markdown, then click Convert. Copy the HTML or use the Preview section.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['md','htmlOut','convert','copy-md','copy-html','clear']
+      .reduce((a,id)=>{a[id.replace('-','_')]=document.getElementById(id);return a;},{});
+    function run(){
+      const html = markdownToHtml(els.md.value || '');
+      els.htmlOut.value = html;
+      document.getElementById('preview').innerHTML = html;
+    }
+    els.convert.addEventListener('click', run);
+    els.copy_md.addEventListener('click', ()=> copyText(els.md));
+    els.copy_html.addEventListener('click', ()=> copyText(els.htmlOut));
+    els.clear.addEventListener('click', ()=>{ els.md.value=''; els.htmlOut.value=''; document.getElementById('preview').innerHTML=''; });
+    run();
+  </script>
+</body>
+</html>

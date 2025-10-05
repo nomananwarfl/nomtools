@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Number Generator | ToolsHub</title>
+  <meta name="description" content="Generate random integers in a range with options for count and uniqueness." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/random-number.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Random Number Generator | ToolsHub" />
+  <meta property="og:description" content="Generate random integers between min and max. Enforce uniqueness and copy results." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/random-number.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Random Number Generator | ToolsHub" />
+  <meta name="twitter:description" content="Generate random integers between min and max. Enforce uniqueness and copy results." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Random Number Generator",
+    "url": "https://toolshub.example.com/tools/random-number.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Generate random integers between min and max with optional uniqueness."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Random Number Generator</h1>
+      <p class="tool-description">Generate random integers between min and max. Optionally generate multiple and enforce uniqueness.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+          <div><label class="label" for="min">Min</label><input id="min" class="input" type="number" value="1" /></div>
+          <div><label class="label" for="max">Max</label><input id="max" class="input" type="number" value="100" /></div>
+          <div><label class="label" for="count">Count</label><input id="count" class="input" type="number" value="1" min="1" max="1000" /></div>
+        </div>
+        <label class="label" style="margin-top:8px"><input type="checkbox" id="unique" /> Unique values</label>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="generate">Generate</button>
+          <button class="btn-secondary" id="copy">Copy</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="output">Results</label>
+        <textarea id="output" class="textarea" placeholder="Results will appear here..."></textarea>
+        <p class="small">Numbers are newline-separated. Using unique with large counts may be slow if the range is small.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Set a min and max (inclusive). Optionally choose how many numbers and whether they must be unique. Click Generate.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['min','max','count','unique','output','generate','copy','clear']
+      .reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    function run(){
+      const min = parseInt(els.min.value,10);
+      const max = parseInt(els.max.value,10);
+      const n = Math.max(1, Math.min(10000, parseInt(els.count.value,10)||1));
+      if(isNaN(min)||isNaN(max)) return;
+      if(min>max){ const t=els.min.value; els.min.value=els.max.value; els.max.value=t; }
+      const out = [];
+      if(els.unique.checked){
+        const range = max - min + 1;
+        const need = Math.min(n, range);
+        const set = new Set();
+        while(set.size < need){ set.add(randomInt(min, max)); }
+        set.forEach(v=> out.push(v));
+      } else {
+        for(let i=0;i<n;i++) out.push(randomInt(min, max));
+      }
+      els.output.value = out.join('\n');
+    }
+    els.generate.addEventListener('click', run);
+    els.copy.addEventListener('click', ()=> copyText(els.output));
+    els.clear.addEventListener('click', ()=> { els.output.value=''; });
+    run();
+  </script>
+</body>
+</html>

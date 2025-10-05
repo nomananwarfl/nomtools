@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator | ToolsHub</title>
+  <meta name="description" content="Generate QR codes from text or URLs instantly and download the image." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/qr-generator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="QR Code Generator | ToolsHub" />
+  <meta property="og:description" content="Generate a QR code from any text or URL and download it as PNG." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/qr-generator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QR Code Generator | ToolsHub" />
+  <meta name="twitter:description" content="Generate a QR code from any text or URL and download it as PNG." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QR Code Generator",
+    "url": "https://toolshub.example.com/tools/qr-generator.html",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "Generate QR codes from text or URLs and download as PNG."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>QR Code Generator</h1>
+      <p class="tool-description">Turn any text or link into a QR code and download it.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="qrtext">Text or URL</label>
+        <input id="qrtext" class="input" type="text" placeholder="https://example.com" />
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="make">Generate</button>
+          <button class="btn-secondary" id="download">Download</button>
+        </div>
+      </div>
+      <div class="output-section" style="display:flex;align-items:center;justify-content:center;min-height:260px">
+        <div id="qrcode"></div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Enter text or a URL and click Generate. Click Download to save the QR as a PNG image.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-Mnme/WsQP8vIY+6C3qH9tzv0a2QJ4pRr9wV2rYk1v3Q1x0Y0qZ2Gk7qkIqq2q9Qb0g1l3vQW6qI3m8kOqQY4VQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="../js/tools.js"></script>
+  <script>
+    const qrtext = document.getElementById('qrtext');
+    const qrel = document.getElementById('qrcode');
+    document.getElementById('make').addEventListener('click', ()=>{
+      makeQRCode(qrel, qrtext.value || '');
+    });
+    document.getElementById('download').addEventListener('click', ()=>{
+      const img = qrel.querySelector('img') || qrel.querySelector('canvas');
+      if(!img) return;
+      let url;
+      if(img.tagName === 'IMG') url = img.src; else url = img.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url; a.download = 'qrcode.png'; a.click();
+    });
+    // Initial render with placeholder
+    makeQRCode(qrel, 'ToolsHub');
+  </script>
+</body>
+</html>

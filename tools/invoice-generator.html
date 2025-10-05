@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice Generator | ToolsHub</title>
+  <meta name="description" content="Create simple invoices in your browser. Add line items, set tax, and print or save as PDF." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/invoice-generator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Invoice Generator | ToolsHub" />
+  <meta property="og:description" content="Create invoices with line items and tax in your browser. Print or save as PDF." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/invoice-generator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Invoice Generator | ToolsHub" />
+  <meta name="twitter:description" content="Create invoices with line items and tax in your browser. Print or save as PDF." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Invoice Generator",
+    "url": "https://toolshub.example.com/tools/invoice-generator.html",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "Create invoices with line items and tax in your browser. Print or save as PDF."
+  }
+  </script>
+  <style>
+    .inv-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .items{width:100%;border-collapse:collapse}
+    .items th,.items td{border:1px solid var(--border);padding:8px}
+    .items th{background:var(--bg);text-align:left}
+    .right{text-align:right}
+    @media print{ .tool-nav, .tool-actions, .label, .input, .select, textarea, button { display:none !important } body{background:#fff} .tool-header{border:none} }
+  </style>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Invoice Generator</h1>
+      <p class="tool-description">Add your business details and line items, then print or save as PDF.</p>
+    </header>
+
+    <div class="tool-interface inv-grid">
+      <div class="input-section">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label class="label" for="from">From</label>
+            <textarea id="from" class="textarea" placeholder="Your Company\nStreet\nCity, ZIP\nEmail"></textarea>
+          </div>
+          <div>
+            <label class="label" for="to">Bill To</label>
+            <textarea id="to" class="textarea" placeholder="Client Name\nStreet\nCity, ZIP\nEmail"></textarea>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px">
+          <div><label class="label" for="invno">Invoice #</label><input id="invno" class="input" type="text" value="INV-1001" /></div>
+          <div><label class="label" for="date">Date</label><input id="date" class="input" type="date" /></div>
+          <div><label class="label" for="tax">Tax Rate (%)</label><input id="tax" class="input" type="number" value="8" step="0.01" /></div>
+        </div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="add">Add Item</button>
+          <button class="btn-secondary" id="print">Print / Save PDF</button>
+          <button class="btn-secondary" id="clear">Clear All</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <table class="items" id="table" aria-label="Invoice items">
+          <thead>
+            <tr><th style="width:40%">Description</th><th class="right" style="width:15%">Qty</th><th class="right" style="width:20%">Unit Price</th><th class="right" style="width:20%">Amount</th><th style="width:5%"></th></tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+          <tfoot>
+            <tr><td colspan="3" class="right"><strong>Subtotal</strong></td><td class="right" id="subtotal">0.00</td><td></td></tr>
+            <tr><td colspan="3" class="right"><strong>Tax</strong></td><td class="right" id="taxval">0.00</td><td></td></tr>
+            <tr><td colspan="3" class="right"><strong>Total</strong></td><td class="right" id="total">0.00</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Fill your details, add items, set tax rate, and use Print to export as PDF. Data stays in your browser only.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const tbody = document.getElementById('tbody');
+    const subtotalEl = document.getElementById('subtotal');
+    const taxEl = document.getElementById('taxval');
+    const totalEl = document.getElementById('total');
+    const taxRateEl = document.getElementById('tax');
+
+    function addRow(desc='', qty=1, price=0){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input class="input" type="text" value="${desc}" /></td>
+        <td class="right"><input class="input" type="number" min="0" step="any" value="${qty}" /></td>
+        <td class="right"><input class="input" type="number" min="0" step="any" value="${price}" /></td>
+        <td class="right amount">0.00</td>
+        <td><button class="btn-secondary" aria-label="Remove row">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+      tr.querySelector('button').addEventListener('click', ()=>{ tr.remove(); recalc(); });
+      ['input','change'].forEach(evt=> tr.addEventListener(evt, recalc));
+      recalc();
+    }
+
+    function recalc(){
+      const items = Array.from(tbody.querySelectorAll('tr')).map(tr=>{
+        const [descEl, qtyEl, priceEl] = tr.querySelectorAll('input');
+        const qty = parseFloat(qtyEl.value||'0');
+        const price = parseFloat(priceEl.value||'0');
+        const amt = qty*price;
+        tr.querySelector('.amount').textContent = amt.toFixed(2);
+        return { desc: descEl.value, qty, price };
+      });
+      const {subtotal, tax, total} = computeInvoiceTotals(items, parseFloat(taxRateEl.value||'0'));
+      subtotalEl.textContent = subtotal.toFixed(2);
+      taxEl.textContent = tax.toFixed(2);
+      totalEl.textContent = total.toFixed(2);
+      save();
+    }
+
+    function save(){
+      const data = {
+        from: document.getElementById('from').value,
+        to: document.getElementById('to').value,
+        invno: document.getElementById('invno').value,
+        date: document.getElementById('date').value,
+        tax: taxRateEl.value,
+        items: Array.from(tbody.querySelectorAll('tr')).map(tr=>{
+          const [descEl, qtyEl, priceEl] = tr.querySelectorAll('input');
+          return { desc: descEl.value, qty: qtyEl.value, price: priceEl.value };
+        })
+      };
+      localStorage.setItem('invoice:data', JSON.stringify(data));
+    }
+    function load(){
+      try{
+        const data = JSON.parse(localStorage.getItem('invoice:data')||'{}');
+        if(!data) return;
+        document.getElementById('from').value = data.from||'';
+        document.getElementById('to').value = data.to||'';
+        document.getElementById('invno').value = data.invno||'INV-1001';
+        document.getElementById('date').value = data.date||'';
+        taxRateEl.value = data.tax||'0';
+        tbody.innerHTML='';
+        (data.items||[{desc:'Service',qty:1,price:100}]).forEach(it=> addRow(it.desc,it.qty,it.price));
+      }catch(e){ addRow('Service',1,100); }
+    }
+
+    document.getElementById('add').addEventListener('click', ()=> addRow('',1,0));
+    document.getElementById('print').addEventListener('click', ()=> window.print());
+    document.getElementById('clear').addEventListener('click', ()=>{ localStorage.removeItem('invoice:data'); location.reload(); });
+
+    load();
+    recalc();
+  </script>
+</body>
+</html>

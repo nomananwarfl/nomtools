@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit Converter | ToolsHub</title>
+  <meta name="description" content="Convert between length, weight, and temperature units quickly and easily." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/unit-converter.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Unit Converter | ToolsHub" />
+  <meta property="og:description" content="Convert length, weight, and temperature with accurate results." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/unit-converter.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Unit Converter | ToolsHub" />
+  <meta name="twitter:description" content="Convert length, weight, and temperature with accurate results." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Unit Converter",
+    "url": "https://toolshub.example.com/tools/unit-converter.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Convert length, weight, and temperature with accurate results."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Unit Converter</h1>
+      <p class="tool-description">Convert length, weight, and temperature units.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="category">Category</label>
+        <select id="category" class="select">
+          <option value="length">Length</option>
+          <option value="weight">Weight</option>
+          <option value="temperature">Temperature</option>
+        </select>
+        <label class="label" for="value">Value</label>
+        <input id="value" class="input" type="number" value="1" step="any" />
+        <div id="units" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"></div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="convert">Convert</button>
+          <button class="btn-secondary" id="swap">Swap</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Result:</strong> <span id="result">0</span></div>
+        <p class="small">Precision is rounded to 6 decimal places.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Pick a category, set units and value, then click Convert. Use Swap to quickly swap units.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const category = document.getElementById('category');
+    const unitsWrap = document.getElementById('units');
+    const valueEl = document.getElementById('value');
+    const result = document.getElementById('result');
+
+    const UNIT_OPTIONS = {
+      length:[['m','Meters'],['km','Kilometers'],['cm','Centimeters'],['mm','Millimeters'],['mi','Miles'],['yd','Yards'],['ft','Feet'],['in','Inches']],
+      weight:[['kg','Kilograms'],['g','Grams'],['lb','Pounds'],['oz','Ounces']],
+      temperature:[['C','Celsius'],['F','Fahrenheit'],['K','Kelvin']]
+    };
+
+    function renderUnitSelectors(cat){
+      unitsWrap.innerHTML = '';
+      const opts = UNIT_OPTIONS[cat];
+      const from = document.createElement('select'); from.className='select'; from.id='from';
+      const to = document.createElement('select'); to.className='select'; to.id='to';
+      opts.forEach(([v,l])=>{
+        const o1 = document.createElement('option'); o1.value=v; o1.textContent=l; from.appendChild(o1);
+        const o2 = document.createElement('option'); o2.value=v; o2.textContent=l; to.appendChild(o2);
+      });
+      from.value = opts[0][0];
+      to.value = opts[1][0] || opts[0][0];
+      const fromWrap = document.createElement('div'); fromWrap.innerHTML = '<label class="label" for="from">From</label>'; fromWrap.appendChild(from);
+      const toWrap = document.createElement('div'); toWrap.innerHTML = '<label class="label" for="to">To</label>'; toWrap.appendChild(to);
+      unitsWrap.appendChild(fromWrap); unitsWrap.appendChild(toWrap);
+    }
+
+    function convert(){
+      const cat = category.value;
+      const val = parseFloat(valueEl.value||'0');
+      const from = document.getElementById('from').value;
+      const to = document.getElementById('to').value;
+      let out = 0;
+      if(cat==='length') out = convertLength(val, from, to);
+      if(cat==='weight') out = convertWeight(val, from, to);
+      if(cat==='temperature') out = convertTemperature(val, from, to);
+      result.textContent = Number(out).toFixed(6);
+    }
+
+    document.getElementById('convert').addEventListener('click', convert);
+    document.getElementById('swap').addEventListener('click', ()=>{
+      const f = document.getElementById('from');
+      const t = document.getElementById('to');
+      const tmp = f.value; f.value = t.value; t.value = tmp; convert();
+    });
+
+    category.addEventListener('change', ()=>{ renderUnitSelectors(category.value); convert(); });
+
+    renderUnitSelectors(category.value);
+    convert();
+  </script>
+</body>
+</html>

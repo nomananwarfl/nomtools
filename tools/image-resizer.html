@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Resizer | ToolsHub</title>
+  <meta name="description" content="Resize images on the client side and download the result without uploading." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/image-resizer.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Image Resizer | ToolsHub" />
+  <meta property="og:description" content="Resize images instantly in your browser and download as JPEG/PNG/WebP." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/image-resizer.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image Resizer | ToolsHub" />
+  <meta name="twitter:description" content="Resize images instantly in your browser and download as JPEG/PNG/WebP." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image Resizer",
+    "url": "https://toolshub.example.com/tools/image-resizer.html",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "description": "Resize images instantly in your browser and download as JPEG/PNG/WebP."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Image Resizer</h1>
+      <p class="tool-description">Resize images instantly in your browser. Your images never leave your device.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="file">Select Image</label>
+        <input id="file" class="input" type="file" accept="image/*" />
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px">
+          <div>
+            <label class="label" for="maxw">Max Width (px)</label>
+            <input id="maxw" class="input" type="number" value="1024" />
+          </div>
+          <div>
+            <label class="label" for="maxh">Max Height (px)</label>
+            <input id="maxh" class="input" type="number" value="1024" />
+          </div>
+        </div>
+        <label class="label" for="format" style="margin-top:8px">Output Format</label>
+        <select id="format" class="select">
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/png">PNG</option>
+          <option value="image/webp">WEBP</option>
+        </select>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="process">Resize</button>
+          <button class="btn-secondary" id="download" disabled>Download</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <canvas id="preview" style="max-width:100%;border:1px solid var(--border);border-radius:10px"></canvas>
+        <p class="small" id="meta"></p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Select an image, set max size and format, then click Resize. Preview updates below, and you can download the result.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    let lastBlob = null;
+    const els = ['file','maxw','maxh','format','process','download','preview','meta'].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    let objectUrl = null;
+    function reset(){ if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl = null; } lastBlob=null; els.download.disabled=true; els.meta.textContent=''; const ctx=els.preview.getContext('2d'); ctx.clearRect(0,0,els.preview.width,els.preview.height); }
+    els.process.addEventListener('click', async()=>{
+      if(!els.file.files[0]) return;
+      const file = els.file.files[0];
+      const {blob, width, height, canvas} = await resizeImage(file, parseInt(els.maxw.value,10), parseInt(els.maxh.value,10), els.format.value);
+      lastBlob = blob;
+      els.preview.width = canvas.width;
+      els.preview.height = canvas.height;
+      const ctx = els.preview.getContext('2d');
+      ctx.drawImage(canvas,0,0);
+      els.meta.textContent = `Output: ${width}×${height} • ${(blob.size/1024).toFixed(1)} KB`;
+      els.download.disabled=false;
+    });
+    els.download.addEventListener('click', ()=>{
+      if(!lastBlob) return;
+      if(objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(lastBlob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = 'resized';
+      a.click();
+    });
+    els.file.addEventListener('change', reset);
+  </script>
+</body>
+</html>

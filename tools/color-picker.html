@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Picker | ToolsHub</title>
+  <meta name="description" content="Pick a color and see its HEX, RGB, and HSL values. Convert between formats easily." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/color-picker.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Color Picker | ToolsHub" />
+  <meta property="og:description" content="Pick a color and convert between HEX, RGB, and HSL instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/color-picker.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Color Picker | ToolsHub" />
+  <meta name="twitter:description" content="Pick a color and convert between HEX, RGB, and HSL instantly." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Color Picker",
+    "url":"https://toolshub.example.com/tools/color-picker.html",
+    "applicationCategory":"MultimediaApplication",
+    "operatingSystem":"Any",
+    "description":"Pick a color and convert between HEX, RGB, and HSL instantly."
+  }
+  </script>
+  <style>
+    .swatch{width:100%;height:120px;border-radius:12px;border:1px solid var(--border)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Color Picker</h1>
+      <p class="tool-description">Choose a color and view HEX, RGB, and HSL representations.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="picker">Choose Color</label>
+        <input id="picker" class="input" type="color" value="#3b82f6" />
+        <div class="grid" style="margin-top:10px">
+          <div>
+            <label class="label" for="hex">HEX</label>
+            <input id="hex" class="input" type="text" value="#3b82f6" />
+          </div>
+          <div>
+            <label class="label" for="rgb">RGB</label>
+            <input id="rgb" class="input" type="text" value="59,130,246" />
+          </div>
+          <div>
+            <label class="label" for="hsl">HSL</label>
+            <input id="hsl" class="input" type="text" value="217,92,60" />
+          </div>
+        </div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="copyHex">Copy HEX</button>
+          <button class="btn-secondary" id="copyRgb">Copy RGB</button>
+          <button class="btn-secondary" id="copyHsl">Copy HSL</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div id="swatch" class="swatch"></div>
+        <p class="small">Tip: Type values directly to convert. RGB format: "r,g,b". HSL format: "h,s,l".</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Use the color input or edit any of HEX/RGB/HSL fields. Values stay in sync and the swatch updates live.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['picker','hex','rgb','hsl'].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    const swatch = document.getElementById('swatch');
+    function updateFromHex(hex){
+      if(!/^#?[0-9a-fA-F]{3,6}$/.test(hex)) return; if(hex[0] !== '#') hex = '#'+hex; els.hex.value = hex.toLowerCase();
+      const rgb = hexToRgb(hex); els.rgb.value = `${rgb.r},${rgb.g},${rgb.b}`; const hsl = rgbToHsl(rgb.r,rgb.g,rgb.b); els.hsl.value = `${hsl.h},${hsl.s},${hsl.l}`; els.picker.value = hex.toLowerCase(); swatch.style.background = hex;
+    }
+    function updateFromRgb(txt){
+      const m = txt.match(/\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*/); if(!m) return; const r=+m[1], g=+m[2], b=+m[3]; if(r>255||g>255||b>255) return; els.hex.value = rgbToHex(r,g,b); const hsl = rgbToHsl(r,g,b); els.hsl.value = `${hsl.h},${hsl.s},${hsl.l}`; els.picker.value = els.hex.value; swatch.style.background = els.hex.value;
+    }
+    function updateFromHsl(txt){
+      const m = txt.match(/\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*/); if(!m) return; const h=+m[1], s=+m[2], l=+m[3]; if(h>360||s>100||l>100) return; const rgb = hslToRgb(h,s,l); els.rgb.value = `${rgb.r},${rgb.g},${rgb.b}`; els.hex.value = rgbToHex(rgb.r,rgb.g,rgb.b); els.picker.value = els.hex.value; swatch.style.background = els.hex.value;
+    }
+    els.picker.addEventListener('input', ()=> updateFromHex(els.picker.value));
+    els.hex.addEventListener('input', ()=> updateFromHex(els.hex.value));
+    els.rgb.addEventListener('input', ()=> updateFromRgb(els.rgb.value));
+    els.hsl.addEventListener('input', ()=> updateFromHsl(els.hsl.value));
+    document.getElementById('copyHex').addEventListener('click', ()=> copyText(els.hex));
+    document.getElementById('copyRgb').addEventListener('click', ()=> copyText(els.rgb));
+    document.getElementById('copyHsl').addEventListener('click', ()=> copyText(els.hsl));
+    updateFromHex(els.hex.value);
+  </script>
+</body>
+</html>

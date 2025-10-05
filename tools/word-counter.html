@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Counter | ToolsHub</title>
+  <meta name="description" content="Count words, characters, lines, and paragraphs in your text with this free Word Counter tool." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/word-counter.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Word Counter | ToolsHub" />
+  <meta property="og:description" content="Count words, characters, lines, and paragraphs in your text instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/word-counter.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Word Counter | ToolsHub" />
+  <meta name="twitter:description" content="Count words, characters, lines, and paragraphs in your text instantly." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Word Counter",
+    "url": "https://toolshub.example.com/tools/word-counter.html",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "Any",
+    "description": "Count words, characters, lines, and paragraphs in your text."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Word Counter</h1>
+      <p class="tool-description">Paste your text below to get live counts of words, characters, lines, and paragraphs.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="text">Your Text</label>
+        <textarea id="text" class="textarea" placeholder="Type or paste your text here..."></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-secondary" id="clearBtn">Clear</button>
+          <button class="btn-secondary" id="copyBtn">Copy</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Words:</strong> <span id="words">0</span></div>
+        <div class="card"><strong>Characters:</strong> <span id="chars">0</span></div>
+        <div class="card"><strong>Lines:</strong> <span id="lines">0</span></div>
+        <div class="card"><strong>Paragraphs:</strong> <span id="paras">0</span></div>
+        <p class="small">Tip: Use <span class="kbd">Ctrl</span> + <span class="kbd">V</span> to paste quickly.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Type or paste your content in the text area. Counts update live as you type. Use Copy to copy your text to the clipboard.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const text = document.getElementById('text');
+    const words = document.getElementById('words');
+    const chars = document.getElementById('chars');
+    const lines = document.getElementById('lines');
+    const paras = document.getElementById('paras');
+    function update(){
+      const s = analyzeTextStats(text.value);
+      words.textContent = s.words;
+      chars.textContent = s.characters;
+      lines.textContent = s.lines;
+      paras.textContent = s.paragraphs;
+    }
+    text.addEventListener('input', update);
+    update();
+    document.getElementById('clearBtn').addEventListener('click', ()=>{ text.value=''; update(); text.focus(); });
+    document.getElementById('copyBtn').addEventListener('click', ()=> copyText(text));
+  </script>
+</body>
+</html>

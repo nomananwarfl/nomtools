@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timer & Stopwatch | ToolsHub</title>
+  <meta name="description" content="Use a simple stopwatch and countdown timer in your browser." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/timer-stopwatch.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Timer & Stopwatch | ToolsHub" />
+  <meta property="og:description" content="Track elapsed time with a stopwatch or run a countdown timer in your browser." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/timer-stopwatch.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Timer & Stopwatch | ToolsHub" />
+  <meta name="twitter:description" content="Track elapsed time with a stopwatch or run a countdown timer in your browser." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Timer & Stopwatch",
+    "url": "https://toolshub.example.com/tools/timer-stopwatch.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Track elapsed time with a stopwatch or run a countdown timer in your browser."
+  }
+  </script>
+  <style>
+    .big-time{font-size:2rem;font-weight:700}
+    .time-grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:768px){.time-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Timer & Stopwatch</h1>
+      <p class="tool-description">Track elapsed time or count down to zero.</p>
+    </header>
+
+    <div class="tool-interface time-grid">
+      <div class="input-section">
+        <h3>Stopwatch</h3>
+        <div class="big-time" id="swDisplay">00:00.000</div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="swStart">Start</button>
+          <button class="btn-secondary" id="swStop">Stop</button>
+          <button class="btn-secondary" id="swReset">Reset</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <h3>Countdown Timer</h3>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+          <div><label class="label" for="min">Minutes</label><input id="min" class="input" type="number" value="1" min="0" /></div>
+          <div><label class="label" for="sec">Seconds</label><input id="sec" class="input" type="number" value="0" min="0" max="59" /></div>
+        </div>
+        <div class="big-time" id="cdDisplay">01:00</div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="cdStart">Start</button>
+          <button class="btn-secondary" id="cdPause">Pause</button>
+          <button class="btn-secondary" id="cdReset">Reset</button>
+        </div>
+        <p class="small">The page must remain open for the countdown to continue.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Use the Stopwatch to track elapsed time with millisecond precision. Use the Countdown by setting minutes and seconds, then Start.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    // Stopwatch
+    const sw = createStopwatch();
+    const swDisplay = document.getElementById('swDisplay');
+    function fmtMs(ms){
+      const totalSec = Math.floor(ms/1000);
+      const min = String(Math.floor(totalSec/60)).padStart(2,'0');
+      const sec = String(totalSec%60).padStart(2,'0');
+      const msPart = String(ms%1000).padStart(3,'0');
+      return `${min}:${sec}.${msPart}`;
+    }
+    document.getElementById('swStart').addEventListener('click', ()=> sw.start((elapsed)=>{ swDisplay.textContent = fmtMs(Math.floor(elapsed)); }));
+    document.getElementById('swStop').addEventListener('click', ()=> sw.stop());
+    document.getElementById('swReset').addEventListener('click', ()=> { sw.reset(); swDisplay.textContent = '00:00.000'; });
+
+    // Countdown
+    const minEl = document.getElementById('min');
+    const secEl = document.getElementById('sec');
+    const cdDisplay = document.getElementById('cdDisplay');
+    let remaining = 60; let timer = null; let paused = false;
+    function displayRemain(){
+      const m = String(Math.floor(remaining/60)).padStart(2,'0');
+      const s = String(remaining%60).padStart(2,'0');
+      cdDisplay.textContent = `${m}:${s}`;
+    }
+    function reset(){
+      remaining = Math.max(0, (parseInt(minEl.value,10)||0)*60 + (parseInt(secEl.value,10)||0));
+      displayRemain();
+    }
+    function tick(){
+      if(remaining>0){ remaining--; displayRemain(); }
+      else { clearInterval(timer); timer=null; cdDisplay.textContent += ' ✓'; }
+    }
+    document.getElementById('cdStart').addEventListener('click', ()=>{
+      if(timer) return; paused=false; reset(); timer = setInterval(tick, 1000);
+    });
+    document.getElementById('cdPause').addEventListener('click', ()=>{
+      if(!timer) return; clearInterval(timer); timer=null; paused=true;
+    });
+    document.getElementById('cdReset').addEventListener('click', ()=>{ if(timer){ clearInterval(timer); timer=null; } reset(); });
+    reset();
+  </script>
+</body>
+</html>

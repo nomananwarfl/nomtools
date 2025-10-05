@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clicks Per Second (CPS) Test</title>
+  <meta name="description" content="Measure your clicks per second with this CPS test. Choose durations: 10s, 20s, 30s, 40s, 50s, or 1 minute." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <style>
+    /* Standard, minimal CSS (scoped to this page) */
+    :root{
+      --bg:#ffffff; --text:#111827; --muted:#6b7280; --primary:#1e3a8a; --border:#e5e7eb; --surface:#f9fafb;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:Arial, Helvetica, sans-serif; color:var(--text); background:var(--bg)}
+    a{color:var(--primary); text-decoration:none}
+
+    .header{background:var(--surface); border-bottom:1px solid var(--border); padding:12px 16px}
+    .header-inner{max-width:1200px; margin:0 auto}
+    .site-title{margin:0 0 12px 0; font-size:20px; font-weight:700; text-align:center}
+    .ad-space{background:#ddd; color:#111; height:100px; display:flex; align-items:center; justify-content:center; border:1px dashed #bbb; border-radius:6px}
+
+    .container{max-width:1200px; margin:16px auto; display:flex; gap:16px; padding:0 16px}
+    .main-content{flex:3; min-width:0}
+    .sidebar{flex:1; display:flex; flex-direction:column; gap:16px}
+
+    .tool-card{border:1px solid var(--border); border-radius:10px; background:#fff; padding:20px}
+    .tool-card h1{margin:0 0 8px 0; font-size:24px}
+    .tool-card p.lead{margin:0 0 16px 0; color:var(--muted)}
+
+    .controls{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 16px}
+    .btn{appearance:none; border:1px solid var(--border); background:#fff; color:var(--text); padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600}
+    .btn:hover{border-color:#cbd5e1}
+    .btn.primary{background:var(--primary); color:#fff; border-color:var(--primary)}
+    .btn.ghost{background:transparent}
+
+    .status{display:flex; gap:16px; align-items:center; margin:12px 0}
+    .status .pill{background:var(--surface); border:1px solid var(--border); padding:6px 10px; border-radius:999px; font-weight:600}
+
+    .click-area{user-select:none; -webkit-user-select:none; border:2px dashed #94a3b8; background:#f8fafc; border-radius:12px; min-height:220px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; cursor:pointer; transition:transform .05s ease}
+    .click-area:active{transform:scale(0.99)}
+
+    .results{margin-top:16px; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px}
+    .result-box{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center}
+    .result-box .label{font-size:12px; color:var(--muted)}
+    .result-box .value{font-size:20px; font-weight:800}
+
+    .variations{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+    .variation{padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; background:#fff}
+    .variation.active{border-color:var(--primary); color:var(--primary); font-weight:700}
+
+    footer{padding:20px 16px; color:var(--muted); text-align:center}
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .container{flex-direction:column}
+      .sidebar{order:2}
+    }
+  </style>
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <h1 class="site-title">CPS Test</h1>
+      <!-- Adsense Ad Space in Header -->
+      <div class="ad-space" aria-label="Header Ad Slot">Adsense Header Ad</div>
+    </div>
+  </header>
+
+  <main class="container" id="main" tabindex="-1">
+    <section class="main-content" aria-labelledby="tool-title">
+      <div class="tool-card">
+        <h1 id="tool-title">Clicks Per Second Tool</h1>
+        <p class="lead">Choose a duration and click as fast as you can. We'll calculate your CPS automatically.</p>
+
+        <div class="controls" aria-label="Timer controls">
+          <button class="btn" data-time="10">10s</button>
+          <button class="btn" data-time="20">20s</button>
+          <button class="btn" data-time="30">30s</button>
+          <button class="btn" data-time="40">40s</button>
+          <button class="btn" data-time="50">50s</button>
+          <button class="btn" data-time="60">1 min</button>
+          <button id="startBtn" class="btn primary" aria-label="Start test">Start</button>
+          <button id="resetBtn" class="btn ghost" aria-label="Reset test">Reset</button>
+        </div>
+
+        <div class="status" role="status" aria-live="polite">
+          <span class="pill" id="timeLeft">Time: 0s</span>
+          <span class="pill" id="clicks">Clicks: 0</span>
+          <span class="pill" id="cps">CPS: 0</span>
+        </div>
+
+        <div id="clickArea" class="click-area" role="button" aria-pressed="false" tabindex="0" title="Click here to count">
+          Click Here
+        </div>
+
+        <div class="results">
+          <div class="result-box">
+            <div class="label">Best CPS (session)</div>
+            <div class="value" id="bestCps">0</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Duration</div>
+            <div class="value" id="durationLabel">10s</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Total Clicks</div>
+            <div class="value" id="totalClicks">0</div>
+          </div>
+        </div>
+
+        <div class="variations" aria-label="Quick durations">
+          <button class="variation" data-time="10">10 Seconds</button>
+          <button class="variation" data-time="20">20 Seconds</button>
+          <button class="variation" data-time="30">30 Seconds</button>
+          <button class="variation" data-time="40">40 Seconds</button>
+          <button class="variation" data-time="50">50 Seconds</button>
+          <button class="variation" data-time="60">1 Minute</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar" aria-label="Right ads">
+      <div class="ad-space" aria-label="Right Ad Slot 1">Adsense Right Ad 1</div>
+      <div class="ad-space" aria-label="Right Ad Slot 2">Adsense Right Ad 2</div>
+    </aside>
+  </main>
+
+  <footer>
+    <small>© 2025 CPS Tool. All rights reserved.</small>
+  </footer>
+
+  <script>
+    (function(){
+      'use strict';
+      const clickArea = document.getElementById('clickArea');
+      const startBtn = document.getElementById('startBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const timeLeftEl = document.getElementById('timeLeft');
+      const clicksEl = document.getElementById('clicks');
+      const cpsEl = document.getElementById('cps');
+      const bestCpsEl = document.getElementById('bestCps');
+      const durationLabel = document.getElementById('durationLabel');
+      const totalClicksEl = document.getElementById('totalClicks');
+
+      const durationButtons = Array.from(document.querySelectorAll('[data-time]'));
+      const variationButtons = Array.from(document.querySelectorAll('.variation'));
+
+      let duration = 10; // default seconds
+      let clicks = 0;
+      let startTime = null;
+      let timerId = null;
+      let best = 0;
+      let running = false;
+
+      function setDuration(sec){
+        duration = Number(sec) || 10;
+        durationLabel.textContent = duration + 's';
+        timeLeftEl.textContent = 'Time: ' + duration + 's';
+        // UI active state for variations
+        variationButtons.forEach(btn => btn.classList.toggle('active', Number(btn.dataset.time) === duration));
+      }
+
+      function formatCps(c){
+        return (Math.round(c * 100) / 100).toString();
+      }
+
+      function updateStats(){
+        clicksEl.textContent = 'Clicks: ' + clicks;
+        totalClicksEl.textContent = clicks.toString();
+        const elapsed = startTime ? (Date.now() - startTime) / 1000 : 0;
+        const cps = elapsed > 0 ? clicks / elapsed : 0;
+        cpsEl.textContent = 'CPS: ' + formatCps(cps);
+      }
+
+      function tick(){
+        const remaining = Math.max(0, duration - Math.floor((Date.now() - startTime)/1000));
+        timeLeftEl.textContent = 'Time: ' + remaining + 's';
+        updateStats();
+        if (remaining <= 0){
+          stop();
+        }
+      }
+
+      function start(){
+        if (running) return;
+        running = true;
+        clicks = 0;
+        startTime = Date.now();
+        updateStats();
+        timeLeftEl.textContent = 'Time: ' + duration + 's';
+        timerId = setInterval(tick, 100);
+        clickArea.setAttribute('aria-pressed','true');
+        clickArea.focus({preventScroll:true});
+      }
+
+      function stop(){
+        if (!running) return;
+        running = false;
+        clearInterval(timerId); timerId = null;
+        const elapsed = Math.max(1e-6, (Date.now() - startTime)/1000);
+        const cps = clicks / elapsed;
+        best = Math.max(best, cps);
+        bestCpsEl.textContent = formatCps(best);
+        updateStats();
+        clickArea.setAttribute('aria-pressed','false');
+      }
+
+      function reset(){
+        stop();
+        clicks = 0; startTime = null;
+        timeLeftEl.textContent = 'Time: ' + duration + 's';
+        updateStats();
+      }
+
+      function handleClick(){
+        if (!running) return; 
+        clicks += 1; 
+        updateStats();
+      }
+
+      // Event wiring
+      clickArea.addEventListener('click', handleClick);
+      clickArea.addEventListener('keydown', (e)=>{
+        if (e.code === 'Space' || e.key === ' '){
+          e.preventDefault(); handleClick();
+        }
+      });
+
+      startBtn.addEventListener('click', start);
+      resetBtn.addEventListener('click', reset);
+
+      durationButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          setDuration(btn.dataset.time);
+        });
+      });
+
+      variationButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          setDuration(btn.dataset.time);
+          reset();
+        });
+      });
+
+      // Initialize defaults
+      setDuration(10);
+      updateStats();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Generator | ToolsHub</title>
+  <meta name="description" content="Generate MD5, SHA-1, and SHA-256 hashes client-side for any text input." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/hash-generator.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Hash Generator | ToolsHub" />
+  <meta property="og:description" content="Compute MD5, SHA-1 and SHA-256 hashes in your browser. Data never leaves your device." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/hash-generator.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hash Generator | ToolsHub" />
+  <meta name="twitter:description" content="Compute MD5, SHA-1 and SHA-256 hashes in your browser. Data never leaves your device." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Hash Generator",
+    "url": "https://toolshub.example.com/tools/hash-generator.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Compute MD5, SHA-1 and SHA-256 hashes in your browser. Data never leaves your device."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Hash Generator</h1>
+      <p class="tool-description">Compute MD5, SHA-1 and SHA-256 hashes in your browser.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="input">Input Text</label>
+        <textarea id="input" class="textarea" placeholder="Type or paste text..."></textarea>
+        <label class="label" for="alg" style="margin-top:8px">Algorithm</label>
+        <select id="alg" class="select">
+          <option>MD5</option>
+          <option>SHA-1</option>
+          <option>SHA-256</option>
+        </select>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="generate">Generate</button>
+          <button class="btn-secondary" id="copy">Copy Hash</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Hash:</strong><br/>
+          <input id="output" class="input" type="text" readonly />
+        </div>
+        <p class="small">Note: Hashes are computed locally and never leave your device.</p>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Enter text, choose an algorithm and click Generate. Copy the resulting hash.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['input','alg','output','generate','copy','clear']
+      .reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    async function run(){
+      const algo = els.alg.value;
+      const txt = els.input.value || '';
+      const digest = await hashDigest(algo, txt);
+      els.output.value = digest;
+    }
+    els.generate.addEventListener('click', run);
+    els.copy.addEventListener('click', ()=> copyText(els.output));
+    els.clear.addEventListener('click', ()=>{ els.input.value=''; els.output.value=''; });
+  </script>
+</body>
+</html>

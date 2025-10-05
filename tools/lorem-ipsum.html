@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lorem Ipsum Generator | ToolsHub</title>
+  <meta name="description" content="Generate placeholder Lorem Ipsum text with configurable paragraphs and sentence lengths." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/lorem-ipsum.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Lorem Ipsum Generator | ToolsHub" />
+  <meta property="og:description" content="Create paragraphs of Lorem Ipsum placeholder text instantly." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/lorem-ipsum.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lorem Ipsum Generator | ToolsHub" />
+  <meta name="twitter:description" content="Create paragraphs of Lorem Ipsum placeholder text instantly." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Lorem Ipsum Generator",
+    "url": "https://toolshub.example.com/tools/lorem-ipsum.html",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "Any",
+    "description": "Create paragraphs of Lorem Ipsum placeholder text instantly."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <p class="tool-description">Generate placeholder paragraphs with adjustable sentence counts.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+          <div>
+            <label class="label" for="paras">Paragraphs</label>
+            <input id="paras" class="input" type="number" min="1" max="20" value="3" />
+          </div>
+          <div>
+            <label class="label" for="minSent">Min sentences</label>
+            <input id="minSent" class="input" type="number" min="1" max="10" value="3" />
+          </div>
+          <div>
+            <label class="label" for="maxSent">Max sentences</label>
+            <input id="maxSent" class="input" type="number" min="1" max="12" value="6" />
+          </div>
+        </div>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="generate">Generate</button>
+          <button class="btn-secondary" id="copy">Copy</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <label class="label" for="output">Output</label>
+        <textarea id="output" class="textarea" placeholder="Generated text will appear here..."></textarea>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Select the number of paragraphs and sentence range. Click Generate, then Copy to clipboard if needed.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const els = ['paras','minSent','maxSent','output','generate','copy','clear'].reduce((a,id)=>{a[id]=document.getElementById(id);return a;},{});
+    function run(){
+      const p = Math.max(1, parseInt(els.paras.value,10)||3);
+      let minS = Math.max(1, parseInt(els.minSent.value,10)||3);
+      let maxS = Math.max(1, parseInt(els.maxSent.value,10)||6);
+      if(maxS < minS){ const t = maxS; maxS = minS; minS = t; }
+      els.output.value = loremIpsum(p, [minS, maxS]);
+    }
+    els.generate.addEventListener('click', run);
+    els.copy.addEventListener('click', ()=> copyText(els.output));
+    els.clear.addEventListener('click', ()=> { els.output.value=''; });
+    run();
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Difference Checker | ToolsHub</title>
+  <meta name="description" content="Compare two texts and see line-by-line differences." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/text-diff.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Text Difference Checker | ToolsHub" />
+  <meta property="og:description" content="Compare two texts and visualize changes line by line." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/text-diff.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Text Difference Checker | ToolsHub" />
+  <meta name="twitter:description" content="Compare two texts and visualize changes line by line." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Text Difference Checker",
+    "url":"https://toolshub.example.com/tools/text-diff.html",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Any",
+    "description":"Compare two texts and visualize changes line by line."
+  }
+  </script>
+  <style>
+    .diff-list{max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+    .diff-row{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:6px 8px;border-bottom:1px solid var(--border);font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    .diff-row:nth-child(odd){background:var(--bg)}
+    .diff-row .line{color:#6b7280}
+    .same{background:transparent}
+    .changed .left{background:#fee2e2}
+    .changed .right{background:#dcfce7}
+    .empty{color:#9ca3af}
+  </style>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>Text Difference Checker</h1>
+      <p class="tool-description">Compare two inputs to find differences by line.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="a">Left Text</label>
+        <textarea id="a" class="textarea" placeholder="Original text..."></textarea>
+        <label class="label" for="b" style="margin-top:8px">Right Text</label>
+        <textarea id="b" class="textarea" placeholder="Modified text..."></textarea>
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="compare">Compare</button>
+          <button class="btn-secondary" id="swap">Swap</button>
+          <button class="btn-secondary" id="clear">Clear</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Results</strong> <span class="small" id="summary"></span></div>
+        <div class="diff-list" id="list" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How to Use</h3>
+      <p>Paste two texts and click Compare. Lines are aligned by index for a quick overview of changes.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const A = document.getElementById('a');
+    const B = document.getElementById('b');
+    const list = document.getElementById('list');
+    const summary = document.getElementById('summary');
+    function render(){
+      const diffs = diffLines(A.value||'', B.value||'');
+      let changed = 0;
+      list.innerHTML = '';
+      diffs.forEach(d => {
+        if(!d.same) changed++;
+        const row = document.createElement('div');
+        row.className = 'diff-row ' + (d.same ? 'same' : 'changed');
+        row.innerHTML = `
+          <div class="line">${d.index}</div>
+          <div class="left">${d.left ? d.left.replace(/</g,'&lt;') : '<span class=\'empty\'>(empty)</span>'}</div>
+          <div class="right">${d.right ? d.right.replace(/</g,'&lt;') : '<span class=\'empty\'>(empty)</span>'}</div>
+        `;
+        list.appendChild(row);
+      });
+      summary.textContent = `• ${diffs.length} lines • ${changed} changed`;
+    }
+    document.getElementById('compare').addEventListener('click', render);
+    document.getElementById('swap').addEventListener('click', ()=>{ const t=A.value; A.value=B.value; B.value=t; render(); });
+    document.getElementById('clear').addEventListener('click', ()=>{ A.value=''; B.value=''; list.innerHTML=''; summary.textContent=''; });
+  </script>
+</body>
+</html>

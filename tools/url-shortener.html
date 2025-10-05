@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener (Simulated) | ToolsHub</title>
+  <meta name="description" content="Simulate URL shortening locally in your browser using a random slug and localStorage." />
+  <link rel="canonical" href="https://toolshub.example.com/tools/url-shortener.html" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="URL Shortener (Simulated) | ToolsHub" />
+  <meta property="og:description" content="Create a short link locally using a random slug. Stored in your browser only." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolshub.example.com/tools/url-shortener.html" />
+  <meta property="og:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="URL Shortener (Simulated) | ToolsHub" />
+  <meta name="twitter:description" content="Create a short link locally using a random slug. Stored in your browser only." />
+  <meta name="twitter:image" content="https://toolshub.example.com/assets/images/og-image.svg" />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/tools.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "URL Shortener (Simulated)",
+    "url": "https://toolshub.example.com/tools/url-shortener.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Create a short link locally using a random slug. Stored in your browser only."
+  }
+  </script>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="tool-nav"><a href="../index.html">← Back to Home</a></div>
+    <header class="tool-header">
+      <h1>URL Shortener (Simulated)</h1>
+      <p class="tool-description">Create a short link locally. Mappings are stored in your browser only.</p>
+    </header>
+
+    <div class="tool-interface">
+      <div class="input-section">
+        <label class="label" for="long">Long URL</label>
+        <input id="long" class="input" type="url" placeholder="https://example.com/my/very/long/link" />
+        <label class="label" for="domain" style="margin-top:8px">Short Domain</label>
+        <input id="domain" class="input" type="text" value="https://sho.rt/" />
+        <div class="tool-actions" style="margin-top:10px">
+          <button class="btn-primary" id="shorten">Shorten</button>
+          <button class="btn-secondary" id="copy">Copy Short URL</button>
+        </div>
+      </div>
+      <div class="output-section">
+        <div class="card"><strong>Short URL:</strong> <input id="short" class="input" type="text" readonly /></div>
+        <div class="card"><strong>Recent Links</strong>
+          <div id="list" class="small"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-info">
+      <h3>How it Works</h3>
+      <p>This is a simulation. We generate a random slug and store the mapping in localStorage. To "open" a short link, copy the full URL shown and use it as a reference.</p>
+    </div>
+  </div>
+
+  <script src="../js/tools.js"></script>
+  <script>
+    const longEl = document.getElementById('long');
+    const domainEl = document.getElementById('domain');
+    const shortEl = document.getElementById('short');
+    const list = document.getElementById('list');
+    const KEY = 'urlshort:links';
+    function getLinks(){ try { return JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){ return []; } }
+    function setLinks(arr){ localStorage.setItem(KEY, JSON.stringify(arr.slice(0,50))); }
+    function render(){
+      const links = getLinks();
+      list.innerHTML = links.map(l=> `<div><a href="${l.long}" target="_blank" rel="noopener">${l.short}</a> → ${l.long}</div>`).join('');
+    }
+    document.getElementById('shorten').addEventListener('click', ()=>{
+      const long = (longEl.value||'').trim(); if(!long) return;
+      const slug = generateSlug(7);
+      const short = (domainEl.value||'https://sho.rt/') + slug;
+      shortEl.value = short;
+      const links = getLinks();
+      links.unshift({short, long});
+      setLinks(links);
+      render();
+    });
+    document.getElementById('copy').addEventListener('click', ()=> copyText(shortEl));
+    render();
+  </script>
+</body>
+</html>
