@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robots.txt Generator & Tester - NomTool</title>
+  <meta name="description" content="Create and test robots.txt rules." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main">
+      <a class="logo" href="/">Nomtool</a>
+    </nav>
+  </header>
+  <main class="tool-page" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">Robots.txt Generator & Tester</h1>
+      <p>Compose rules and test if a URL is allowed by robots.txt.</p>
+    </section>
+    <section class="card" aria-label="Editor">
+      <div class="form-row">
+        <label for="robots">robots.txt</label>
+        <textarea id="robots" placeholder="User-agent: *
+Disallow: /admin"></textarea>
+      </div>
+      <div class="form-row">
+        <label for="testUrl">Test URL</label>
+        <input id="testUrl" type="url" placeholder="https://example.com/admin/page" />
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="btnTest">Test</button>
+        <button class="btn-secondary" id="btnDownload">Download robots.txt</button>
+      </div>
+    </section>
+    <section class="card" aria-label="Result">
+      <h2>Result</h2>
+      <div id="result"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><p>&copy; 2025 Nom.Tool.</p></footer>
+  <script>
+    (function(){
+      const d = document;
+      function parseRobots(text){
+        const groups = [];
+        let current = {agents: ['*'], disallow: [], allow: []};
+        text.split(/\r?\n/).forEach(line=>{
+          const l = line.trim();
+          if(!l || l.startsWith('#')) return;
+          const [kRaw, vRaw] = l.split(':');
+          const k = (kRaw||'').trim().toLowerCase();
+          const v = (vRaw||'').trim();
+          if(k === 'user-agent'){
+            if(current.agents.length || current.disallow.length || current.allow.length){
+              groups.push(current); current = {agents: [], disallow: [], allow: []};
+            }
+            current.agents.push(v||'*');
+          }else if(k === 'disallow'){
+            if(v) current.disallow.push(v);
+          }else if(k === 'allow'){
+            if(v) current.allow.push(v);
+          }
+        });
+        groups.push(current);
+        return groups;
+      }
+      function isAllowed(urlPath, group){
+        const match = (path, rules)=> rules.some(rule=> path.startsWith(rule));
+        if(match(urlPath, group.disallow)) return false;
+        return true;
+      }
+      d.getElementById('btnTest')?.addEventListener('click', ()=>{
+        const robots = d.getElementById('robots').value||'';
+        const url = d.getElementById('testUrl').value||'';
+        try{
+          const u = new URL(url);
+          const groups = parseRobots(robots);
+          const allowed = isAllowed(u.pathname, groups[0]||{agents:['*'], disallow:[], allow:[]});
+          d.getElementById('result').textContent = allowed ? 'Allowed' : 'Blocked';
+        }catch(e){
+          d.getElementById('result').textContent = 'Enter a valid URL.';
+        }
+      });
+      d.getElementById('btnDownload')?.addEventListener('click', ()=>{
+        const txt = d.getElementById('robots').value||'';
+        const blob = new Blob([txt], {type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'robots.txt'; a.click();
+        URL.revokeObjectURL(url);
+      });
+    })();
+  </script>
+</body>
+</html>

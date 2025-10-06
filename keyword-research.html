@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keyword Research (Country-wise) - NomTool</title>
+  <meta name="description" content="Explore keyword ideas by country. Simple country-wise keyword research tool." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main">
+      <a class="logo" href="/">Nomtool</a>
+    </nav>
+  </header>
+
+  <main class="tool-page" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">Keyword Research (Country-wise)</h1>
+      <p>Enter a seed keyword and choose a country to explore ideas. (Placeholder UI)</p>
+    </section>
+
+    <section class="card" aria-label="Keyword Research Form">
+      <div class="form-row">
+        <label for="kw">Keyword</label>
+        <input id="kw" type="text" placeholder="e.g., best running shoes" />
+      </div>
+      <div class="form-row">
+        <label for="country">Country</label>
+        <select id="country">
+          <option>Loading countries…</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="btnSearch" aria-label="Search keywords">Search</button>
+        <a class="btn-secondary" href="/" aria-label="Back to home">Back</a>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Results">
+      <h2>Results</h2>
+      <div id="results" class="results"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 Nom.Tool.</p>
+  </footer>
+
+  <script>
+    (function(){
+      const d = document;
+      const btn = d.getElementById('btnSearch');
+      const kw = d.getElementById('kw');
+      const country = d.getElementById('country');
+      const results = d.getElementById('results');
+
+      // Populate countries from REST Countries API (fallback to a small list if it fails)
+      (async function loadCountries(){
+        const fallback = [
+          {code:'US', name:'United States'},
+          {code:'GB', name:'United Kingdom'},
+          {code:'CA', name:'Canada'},
+          {code:'AU', name:'Australia'},
+          {code:'IN', name:'India'},
+          {code:'PK', name:'Pakistan'}
+        ];
+        try{
+          const resp = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2');
+          if(!resp.ok) throw new Error('Failed to fetch');
+          const data = await resp.json();
+          const items = (Array.isArray(data)?data:[])
+            .map(x=>({code: x.cca2, name: (x.name && x.name.common) || x.cca2}))
+            .filter(x=>x.code && x.name)
+            .sort((a,b)=> a.name.localeCompare(b.name));
+          renderCountryOptions(items.length ? items : fallback);
+        }catch(e){
+          renderCountryOptions(fallback);
+        }
+      })();
+
+      function renderCountryOptions(list){
+        country.innerHTML = '';
+        list.forEach(({code,name})=>{
+          const opt = d.createElement('option');
+          opt.value = code;
+          opt.textContent = name;
+          country.appendChild(opt);
+        });
+        const us = Array.from(country.options).find(o=>o.value.toUpperCase()==='US');
+        if(us) country.value = 'US';
+      }
+
+      async function fetchSuggestionsSerpApi(query, countryCode){
+        const key = localStorage.getItem('NOM_SERPAPI_KEY');
+        if(!key) return null;
+        const gl = (countryCode||'US').toUpperCase();
+        const url = `https://serpapi.com/search.json?engine=google_autocomplete&q=${encodeURIComponent(query)}&hl=en&gl=${encodeURIComponent(gl)}&api_key=${encodeURIComponent(key)}`;
+        const resp = await fetch(url);
+        if(!resp.ok) throw new Error('SerpAPI error');
+        const data = await resp.json();
+        if(Array.isArray(data.suggestions)){
+          return data.suggestions.map(s=> typeof s === 'string' ? s : (s.value||''))
+                                 .filter(Boolean);
+        }
+        return null;
+      }
+
+      async function fetchSuggestionsCustom(query, countryCode){
+        const base = localStorage.getItem('NOM_KEYWORD_API_URL');
+        if(!base) return null;
+        const key = localStorage.getItem('NOM_KEYWORD_API_KEY');
+        const url = `${base}?q=${encodeURIComponent(query)}&country=${encodeURIComponent(countryCode||'US')}`;
+        const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
+        const resp = await fetch(url, { headers });
+        if(!resp.ok) throw new Error('Custom API error');
+        const data = await resp.json();
+        // Expect an array of strings under data.suggestions or root array
+        const arr = Array.isArray(data?.suggestions) ? data.suggestions : (Array.isArray(data) ? data : []);
+        return arr.map(x=>String(x)).filter(Boolean);
+      }
+
+      function renderList(list){
+        results.innerHTML = '<ul>' + list.map(i=>`<li>${i}</li>`).join('') + '</ul>';
+      }
+
+      if(btn){
+        btn.addEventListener('click', async ()=>{
+          const k = (kw.value||'').trim();
+          const c = country.value;
+          if(!k){
+            results.innerHTML = '<p>Please enter a keyword.</p>';
+            return;
+          }
+          results.innerHTML = '<p>Loading suggestions…</p>';
+          try{
+            let ideas = null;
+            // Try SerpAPI first if configured
+            ideas = await fetchSuggestionsSerpApi(k, c);
+            // Then try custom API if SerpAPI not configured or returned empty
+            if(!ideas || ideas.length === 0){
+              ideas = await fetchSuggestionsCustom(k, c);
+            }
+            // Fallback if still empty
+            if(!ideas || ideas.length === 0){
+              ideas = [
+                `${k} near me`,
+                `${k} review`,
+                `${k} price in ${c}`,
+                `best ${k} in ${c}`
+              ];
+            }
+            renderList(ideas);
+          }catch(e){
+            const ideas = [
+              `${k} near me`,
+              `${k} review`,
+              `${k} price in ${c}`,
+              `best ${k} in ${c}`
+            ];
+            renderList(ideas);
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

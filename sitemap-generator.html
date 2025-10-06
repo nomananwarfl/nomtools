@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sitemap Generator - NomTool</title>
+  <meta name="description" content="Generate an XML sitemap from a list of URLs." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main">
+      <a class="logo" href="/">Nomtool</a>
+    </nav>
+  </header>
+  <main class="tool-page" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">Sitemap Generator</h1>
+      <p>Paste URLs or crawl from a starting URL (proxy required) to generate a simple XML sitemap.</p>
+    </section>
+    <section class="card" aria-label="Form">
+      <div class="form-row">
+        <label for="urls">URLs</label>
+        <textarea id="urls" placeholder="https://example.com/
+https://example.com/about"></textarea>
+      </div>
+      <div class="form-row">
+        <label for="startUrl">Crawl from URL (optional)</label>
+        <input id="startUrl" type="url" placeholder="https://example.com" />
+      </div>
+      <div class="form-row" style="display:flex; gap:8px">
+        <div style="flex:1">
+          <label for="maxPages">Max pages</label>
+          <input id="maxPages" type="number" min="1" max="1000" value="50" />
+        </div>
+        <div style="flex:1">
+          <label for="sameHost">Limit to same host</label>
+          <select id="sameHost">
+            <option value="1" selected>Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="btnGen">Generate XML</button>
+        <button class="btn-secondary" id="btnCrawl">Crawl and Fill</button>
+        <button class="btn-secondary" id="btnDownload">Download</button>
+      </div>
+    </section>
+    <section class="card" aria-label="Output">
+      <h2>XML</h2>
+      <pre id="xmlOut" style="white-space:pre-wrap"></pre>
+    </section>
+  </main>
+  <footer class="site-footer"><p>&copy; 2025 Nom.Tool.</p></footer>
+  <script>
+    (function(){
+      const d = document;
+      function genXml(urls){
+        const items = urls.filter(Boolean).map(u=>`  <url>\n    <loc>${u}</loc>\n  </url>`).join('\n');
+        return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items}\n</urlset>`;
+      }
+      async function crawl(startUrl, maxPages, sameHost){
+        const base = localStorage.getItem('NOM_CRAWL_PROXY_URL');
+        if(!base) throw new Error('Crawl proxy URL not configured');
+        const key = localStorage.getItem('NOM_CRAWL_PROXY_KEY');
+        const url = `${base}?url=${encodeURIComponent(startUrl)}&max=${encodeURIComponent(maxPages)}&same_host=${encodeURIComponent(sameHost?1:0)}`;
+        const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
+        const resp = await fetch(url, { headers });
+        if(!resp.ok) throw new Error('Crawl proxy error');
+        const data = await resp.json();
+        // Expect { urls: [...] } or root array
+        const arr = Array.isArray(data?.urls) ? data.urls : (Array.isArray(data) ? data : []);
+        return arr.map(x=>String(x)).filter(Boolean);
+      }
+      d.getElementById('btnGen')?.addEventListener('click', ()=>{
+        const lines = (d.getElementById('urls').value||'').split(/\r?\n/).map(s=>s.trim()).filter(s=>s);
+        d.getElementById('xmlOut').textContent = genXml(lines);
+      });
+      d.getElementById('btnCrawl')?.addEventListener('click', async ()=>{
+        const start = (d.getElementById('startUrl').value||'').trim();
+        const max = parseInt(d.getElementById('maxPages').value||'50',10);
+        const same = d.getElementById('sameHost').value === '1';
+        if(!start){ alert('Enter a starting URL to crawl.'); return; }
+        try{
+          const urls = await crawl(start, isNaN(max)?50:max, same);
+          const current = (d.getElementById('urls').value||'').trim();
+          const set = new Set(current ? current.split(/\r?\n/).map(s=>s.trim()).filter(Boolean) : []);
+          urls.forEach(u=> set.add(u));
+          d.getElementById('urls').value = Array.from(set).join('\n');
+        }catch(e){
+          alert('Crawl failed. Configure NOM_CRAWL_PROXY_URL in localStorage and ensure CORS is enabled.');
+        }
+      });
+      d.getElementById('btnDownload')?.addEventListener('click', ()=>{
+        const xml = d.getElementById('xmlOut').textContent || '';
+        const blob = new Blob([xml], {type:'application/xml'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'sitemap.xml'; a.click();
+        URL.revokeObjectURL(url);
+      });
+    })();
+  </script>
+</body>
+</html>

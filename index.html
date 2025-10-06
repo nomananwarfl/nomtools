@@ -6,6 +6,7 @@
     <title>Nom.Online - Free Online Tools for Everyone</title>
     <meta name="description" content="Free online tools for text, image, developer, and utility needs. Word counter, password generator, QR code generator, image resizer, unit converter and more." />
     <link rel="canonical" href="https://nomtool.space/" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1e3a8a" />
     <meta name="robots" content="index,follow" />
@@ -24,7 +25,7 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "website",
+      "@type": "Website",
       "name": "Nom.Online",
       "url": "https://nomtool.space/",
       "potentialAction": {
@@ -69,6 +70,7 @@
                 <a href="#image-tools">Image Tools</a>
                 <a href="#dev-tools">Developer Tools</a>
                 <a href="#utilities">Utilities</a>
+                <a href="#seo-tools">Essential SEO Tools</a>
             </div>
         </nav>
     </header>
@@ -83,8 +85,33 @@
                 <button class="btn-primary" id="searchBtn" aria-label="Search tools">Search</button>
             </div>
         </section>
-        <section class="ad-section" aria-label="Homepage Ad">
-            <div class="ad-space">Adsense Homepage Ad</div>
+        <section class="ad-section contact-cta" aria-label="Contact">
+            <div class="ad-space">
+                <div class="contact-cta-content">
+                    <div class="contact-cta-text">
+                        <h3>Have a feature request or found a bug?</h3>
+                        <p>We'd love to hear from you. Reach out and we’ll get back within 24 hours.</p>
+                    </div>
+                    <a class="btn-primary" href="mailto:nomtool.space@gmail.com?subject=Support%20Request" onclick="openEmail('nomtool.space@gmail.com','Support Request'); return false;" aria-label="Contact Us">Contact Us</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AdSense Responsive Display Banner -->
+        <section class="ad-section" aria-label="Display Banner Ad">
+            <div class="ad-responsive">
+                <div class="ad-box">
+                <!-- Replace data-ad-client and data-ad-slot with your real IDs -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+                     data-ad-slot="0000000000"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                </div>
+            </div>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx" crossorigin="anonymous"></script>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </section>
 
         <section class="tools-section" id="text-tools" aria-labelledby="text-tools-title">
@@ -100,6 +127,11 @@
         <section class="tools-section" id="dev-tools" aria-labelledby="dev-tools-title">
             <h2 id="dev-tools-title">Developer Tools</h2>
             <div class="tools-grid" id="grid-developer"></div>
+        </section>
+
+        <section class="tools-section" id="seo-tools" aria-labelledby="seo-tools-title">
+            <h2 id="seo-tools-title">Essential SEO Tools</h2>
+            <div class="tools-grid" id="grid-seo"></div>
         </section>
 
         <section class="tools-section" id="utilities" aria-labelledby="utilities-title">

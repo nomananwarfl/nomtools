@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SERP Preview - NomTool</title>
+  <meta name="description" content="Preview how your page may appear in search results." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .serp-wrap{max-width:700px}
+    .serp-card{border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--card)}
+    .serp-title{color:#1a0dab; font-size:18px; line-height:1.2; margin:0 0 4px;}
+    .serp-url{color:#006621; font-size:14px; margin:0 0 6px;}
+    .serp-desc{color:#4d5156; font-size:13px;}
+    .row{display:flex; flex-direction:column; gap:4px; margin-bottom:8px}
+    .hint{font-size:12px; color:#6b7280}
+    .warn{color:#b91c1c}
+  </style>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main">
+      <a class="logo" href="/">Nomtool</a>
+    </nav>
+  </header>
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">SERP Preview</h1>
+      <p>Fill in title, URL, and description to preview.</p>
+    </section>
+    <section class="card" aria-label="Form">
+      <div class="toggle-group" role="group" aria-label="Device">
+        <button class="btn-secondary active" id="toggleDesktop" aria-pressed="true">Desktop</button>
+        <button class="btn-secondary" id="toggleMobile" aria-pressed="false">Mobile</button>
+      </div>
+      <div class="form-row row">
+        <label for="titleInput">Title</label>
+        <input id="titleInput" placeholder="Page title" />
+        <div class="counter" id="titleCounter">0 chars · 0 px</div>
+        <div class="badge badge-warn" id="titleWarn" style="display:none">Over desktop/mobile limit</div>
+        <div class="hint">Guideline: about 60 chars or ~600px on desktop.</div>
+      </div>
+      <div class="form-row row"><label for="urlInput">URL</label><input id="urlInput" placeholder="https://example.com/page" /></div>
+      <div class="form-row row">
+        <label for="descInput">Description</label>
+        <textarea id="descInput" placeholder="Meta description"></textarea>
+        <div class="counter" id="descCounter">0 chars · 0 px</div>
+        <div class="badge badge-warn" id="descWarn" style="display:none">Over desktop/mobile limit</div>
+        <div class="hint">Guideline: about 155–160 chars or ~920px on desktop.</div>
+      </div>
+      <div class="actions"><button class="btn-primary" id="btnRender">Render</button></div>
+    </section>
+    <section class="card" aria-label="Preview">
+      <h2>Preview</h2>
+      <div id="serpWrap" class="serp-wrap" style="max-width:700px">
+        <div id="serp" class="serp-card">
+          <h3 class="serp-title" id="serpTitle">Your Title</h3>
+          <div class="serp-url" id="serpUrl">https://example.com/page</div>
+          <div class="serp-desc" id="serpDesc">Your description goes here.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><p>&copy; 2025 Nom.Tool.</p></footer>
+  <script>
+    (function(){
+      const d = document;
+      const titleInput = d.getElementById('titleInput');
+      const descInput = d.getElementById('descInput');
+      const titleCounter = d.getElementById('titleCounter');
+      const descCounter = d.getElementById('descCounter');
+      const wrap = d.getElementById('serpWrap');
+      const desktopBtn = d.getElementById('toggleDesktop');
+      const mobileBtn = d.getElementById('toggleMobile');
+      const titleWarn = d.getElementById('titleWarn');
+      const descWarn = d.getElementById('descWarn');
+
+      let device = 'desktop';
+
+      const LIMITS = {
+        desktop: { titlePx: 600, descPx: 920 },
+        mobile:  { titlePx: 550, descPx: 680 }
+      };
+
+      function measurePx(text, font){
+        const c = d.createElement('canvas');
+        const ctx = c.getContext('2d');
+        ctx.font = font || '18px Arial';
+        return Math.round(ctx.measureText(text).width);
+      }
+      function updateCounters(){
+        const t = titleInput.value||'';
+        const ds = descInput.value||'';
+        const tPx = measurePx(t, '18px Arial');
+        const dPx = measurePx(ds, '13px Arial');
+        titleCounter.textContent = `${t.length} chars · ${tPx} px`;
+        descCounter.textContent = `${ds.length} chars · ${dPx} px`;
+        const lim = LIMITS[device];
+        const tOver = tPx > lim.titlePx;
+        const dOver = dPx > lim.descPx;
+        titleCounter.classList.toggle('warn', tOver);
+        descCounter.classList.toggle('warn', dOver);
+        titleWarn.style.display = tOver ? 'inline-block' : 'none';
+        descWarn.style.display = dOver ? 'inline-block' : 'none';
+      }
+      function truncateToPx(text, pxLimit, font){
+        if(measurePx(text, font) <= pxLimit) return text;
+        let lo = 0, hi = text.length, ans = '';
+        while(lo <= hi){
+          const mid = Math.floor((lo+hi)/2);
+          const candidate = text.slice(0, mid) + '…';
+          if(measurePx(candidate, font) <= pxLimit){ ans = candidate; lo = mid + 1; }
+          else { hi = mid - 1; }
+        }
+        return ans || text.slice(0, 1) + '…';
+      }
+      function setDevice(next){
+        device = next;
+        if(device==='desktop'){
+          wrap.style.maxWidth = '700px';
+          desktopBtn.classList.add('active');
+          desktopBtn.setAttribute('aria-pressed','true');
+          mobileBtn.classList.remove('active');
+          mobileBtn.setAttribute('aria-pressed','false');
+        }else{
+          wrap.style.maxWidth = '360px';
+          mobileBtn.classList.add('active');
+          mobileBtn.setAttribute('aria-pressed','true');
+          desktopBtn.classList.remove('active');
+          desktopBtn.setAttribute('aria-pressed','false');
+        }
+        updateCounters();
+      }
+
+      titleInput.addEventListener('input', updateCounters);
+      descInput.addEventListener('input', updateCounters);
+      desktopBtn.addEventListener('click', ()=> setDevice('desktop'));
+      mobileBtn.addEventListener('click', ()=> setDevice('mobile'));
+
+      d.getElementById('btnRender')?.addEventListener('click', ()=>{
+        const lim = LIMITS[device];
+        const tRaw = titleInput.value || 'Your Title';
+        const dRaw = descInput.value || 'Your description goes here.';
+        const tTrunc = truncateToPx(tRaw, lim.titlePx, '18px Arial');
+        const dTrunc = truncateToPx(dRaw, lim.descPx, '13px Arial');
+        d.getElementById('serpTitle').textContent = tTrunc;
+        d.getElementById('serpUrl').textContent = d.getElementById('urlInput').value || 'https://example.com/page';
+        d.getElementById('serpDesc').textContent = dTrunc;
+        updateCounters();
+      });
+
+      // Initialize
+      setDevice('desktop');
+      updateCounters();
+    })();
+  </script>
+</body>
+</html>
