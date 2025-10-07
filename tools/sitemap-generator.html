@@ -32,7 +32,7 @@ https://example.com/about"></textarea>
       <div class="form-row" style="display:flex; gap:8px">
         <div style="flex:1">
           <label for="maxPages">Max pages</label>
-          <input id="maxPages" type="number" min="1" max="1000" value="50" />
+          <input id="maxPages" type="number" min="1" max="500000" value="500000" />
         </div>
         <div style="flex:1">
           <label for="sameHost">Limit to same host</label>
@@ -80,11 +80,11 @@ https://example.com/about"></textarea>
       });
       d.getElementById('btnCrawl')?.addEventListener('click', async ()=>{
         const start = (d.getElementById('startUrl').value||'').trim();
-        const max = parseInt(d.getElementById('maxPages').value||'50',10);
+        const max = parseInt(d.getElementById('maxPages').value||'500000',10);
         const same = d.getElementById('sameHost').value === '1';
         if(!start){ alert('Enter a starting URL to crawl.'); return; }
         try{
-          const urls = await crawl(start, isNaN(max)?50:max, same);
+          const urls = await crawl(start, isNaN(max)?500000:max, same);
           const current = (d.getElementById('urls').value||'').trim();
           const set = new Set(current ? current.split(/\r?\n/).map(s=>s.trim()).filter(Boolean) : []);
           urls.forEach(u=> set.add(u));
