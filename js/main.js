@@ -44,6 +44,14 @@
     { id:'hash-generator', name:'Hash Generator', description:'MD5, SHA1, SHA256 (client-side).', category:'developer', href:'tools/hash-generator.html' },
     { id:'base64-tool', name:'Base64 Encoder/Decoder', description:'Encode/Decode Base64.', category:'developer', href:'tools/base64-tool.html' },
 
+    // SEO category
+    { id:'seo-meta-tool', name:'SEO Meta Tool', description:'Generate and preview SEO meta tags.', category:'seo', href:'tools/seo-meta-tool.html' },
+    { id:'keyword-research', name:'Keyword Research (Country-wise)', description:'Explore keyword ideas by country.', category:'seo', href:'tools/keyword-research.html' },
+    { id:'backlink-checker', name:'Backlink Checker', description:'Check backlinks for a domain (placeholder).', category:'seo', href:'tools/backlink-checker.html' },
+    { id:'serp-preview', name:'SERP Preview', description:'Preview how your page may appear in search results.', category:'seo', href:'tools/serp-preview.html' },
+    { id:'sitemap-generator', name:'Sitemap Generator', description:'Generate an XML sitemap from URLs.', category:'seo', href:'tools/sitemap-generator.html' },
+    { id:'robots-tester', name:'Robots.txt Generator & Tester', description:'Create and test robots.txt rules.', category:'seo', href:'tools/robots-tester.html' },
+
     { id:'percentage-calculator', name:'Percentage Calculator', description:'Compute percentages easily.', category:'utility', href:'tools/percentage-calculator.html' },
     { id:'age-calculator', name:'Age Calculator', description:'Calculate age from birthdate.', category:'utility', href:'tools/age-calculator.html' },
     { id:'random-number', name:'Random Number Generator', description:'Generate random numbers.', category:'utility', href:'tools/random-number.html' },
@@ -57,7 +65,8 @@
       text: d.getElementById('grid-text'),
       image: d.getElementById('grid-image'),
       developer: d.getElementById('grid-developer'),
-      utility: d.getElementById('grid-utility')
+      utility: d.getElementById('grid-utility'),
+      seo: d.getElementById('grid-seo')
     };
     Object.values(grids).forEach(g=>{ if(g) g.innerHTML=''; });
     const q = filter.trim().toLowerCase();
