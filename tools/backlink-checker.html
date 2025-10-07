@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backlink Checker - NomTool</title>
+  <meta name="description" content="Check backlinks for a domain (placeholder)." />
+  <link rel="icon" href="../assets/icons/favicon.ico" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="navbar" role="navigation" aria-label="Main">
+      <a class="logo" href="/">Nomtool</a>
+    </nav>
+  </header>
+  <main class="tool-page" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title">Backlink Checker</h1>
+      <p>Enter a domain to simulate fetching backlinks. (Placeholder)</p>
+    </section>
+    <section class="card" aria-label="Form">
+      <div class="form-row">
+        <label for="domain">Domain</label>
+        <input id="domain" type="url" placeholder="https://example.com" />
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="btnCheck">Check</button>
+        <a class="btn-secondary" href="/" aria-label="Back to home">Back</a>
+      </div>
+    </section>
+    <section class="card" aria-label="Results">
+      <h2>Results</h2>
+      <div id="results"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><p>&copy; 2025 Nom.Tool.</p></footer>
+  <script>
+    (function(){
+      const d = document;
+      async function fetchBacklinks(domain){
+        const base = localStorage.getItem('NOM_BACKLINK_API_URL');
+        if(!base) return null;
+        const key = localStorage.getItem('NOM_BACKLINK_API_KEY');
+        const url = `${base}?domain=${encodeURIComponent(domain)}`;
+        const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
+        const resp = await fetch(url, { headers });
+        if(!resp.ok) throw new Error('Backlink API error');
+        const data = await resp.json();
+        // Expect array under data.backlinks or root array of URLs/objects
+        const arr = Array.isArray(data?.backlinks) ? data.backlinks : (Array.isArray(data) ? data : []);
+        // Normalize to URL strings
+        return arr.map(x=> typeof x === 'string' ? x : (x.url || x.link || '')).filter(Boolean);
+      }
+
+      function render(list){
+        if(!list || list.length===0){
+          d.getElementById('results').innerHTML = '<p>No backlinks found.</p>';
+          return;
+        }
+        d.getElementById('results').innerHTML = '<ul>' + list.map(u=>`<li><a href="${u}" target="_blank" rel="noopener">${u}</a></li>`).join('') + '</ul>';
+      }
+
+      d.getElementById('btnCheck')?.addEventListener('click', async ()=>{
+        const domain = (d.getElementById('domain').value||'').trim();
+        const out = d.getElementById('results');
+        if(!domain){ out.innerHTML = '<p>Please enter a domain.</p>'; return; }
+        out.innerHTML = '<p>Loading backlinks…</p>';
+        try{
+          let links = await fetchBacklinks(domain);
+          if(!links || links.length===0){
+            // Fallback mock
+            links = [
+              `https://news.example.com/ref/${domain}`,
+              `https://blog.example.net/post-about-${encodeURIComponent(domain)}`,
+              `https://directory.example.org/listings/${encodeURIComponent(domain)}`
+            ];
+          }
+          render(links);
+        }catch(e){
+          const links = [
+            `https://news.example.com/ref/${domain}`,
+            `https://blog.example.net/post-about-${encodeURIComponent(domain)}`,
+            `https://directory.example.org/listings/${encodeURIComponent(domain)}`
+          ];
+          render(links);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
