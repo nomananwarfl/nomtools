@@ -48,9 +48,12 @@ body{
 .master-nav-inner a.active,
 .master-nav-inner a[aria-current="page"]{
   color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
 }
 
-/* Show underline only on hover and focus for all master nav links */
+/* Show underline on hover and focus for non-active master nav links */
 .master-nav-inner a:hover,
 .master-nav-inner a:focus {
   text-decoration: underline;
