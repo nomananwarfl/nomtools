@@ -53,6 +53,11 @@ body{
   text-decoration-thickness: 2px;
 }
 
+/* Do not underline Home when it is the current page */
+.master-nav-inner a[aria-current="page"][href="/"]{
+  text-decoration: none;
+}
+
 /* Buttons */
 .btn-primary,.btn-secondary{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;transition:transform .05s ease,background .2s}
 .btn-primary{background:linear-gradient(180deg,var(--secondary),var(--primary));color:#fff}
