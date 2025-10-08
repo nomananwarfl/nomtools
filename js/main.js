@@ -125,7 +125,18 @@
       // When opened from file://, pathname may include full filename without leading '/'
       if(!path.startsWith('/')) path = '/' + path;
       const fileName = path.split('/').filter(Boolean).pop() || '';
-      const candidates = new Set([path, '/' + fileName, fileName || '/', '/']);
+      const isHome = (path === '/' || fileName === '' || fileName.toLowerCase() === 'index.html');
+      const candidates = new Set([path]);
+      if(fileName) {
+        candidates.add('/' + fileName);
+        candidates.add(fileName);
+      }
+      // Only consider '/' as a candidate when actually on the home page
+      if(isHome) {
+        candidates.add('/');
+        candidates.add('/index.html');
+        candidates.add('index.html');
+      }
 
       links.forEach(a=>{
         const href = a.getAttribute('href') || '';
