@@ -113,6 +113,33 @@
     });
   });
 
+  // Highlight current page in master navigation
+  (function highlightMasterNav(){
+    try{
+      const links = d.querySelectorAll('.master-nav-inner a[href]');
+      if(!links.length) return;
+
+      // Normalize current path for matching (handles '/', '/index.html', and file-based paths)
+      const loc = location;
+      let path = loc.pathname || '/';
+      // When opened from file://, pathname may include full filename without leading '/'
+      if(!path.startsWith('/')) path = '/' + path;
+      const fileName = path.split('/').filter(Boolean).pop() || '';
+      const candidates = new Set([path, '/' + fileName, fileName || '/', '/']);
+
+      links.forEach(a=>{
+        const href = a.getAttribute('href') || '';
+        // Consider absolute path, relative file name, and root
+        const abs = href.startsWith('/') ? href : ('/' + href);
+        const rel = href.replace(/^\//,'');
+        if(candidates.has(abs) || candidates.has('/' + rel) || candidates.has(rel)){
+          a.classList.add('active');
+          a.setAttribute('aria-current','page');
+        }
+      });
+    }catch(e){ /* noop */ }
+  })();
+
   // Simple analytics stub: count clicks on tool cards (localStorage)
   d.addEventListener('click', (e)=>{
     const a = e.target.closest('a[href]');
