@@ -526,14 +526,16 @@ https://example.com/page2"></textarea>
           
           // Handle result tabs
           if (this.getAttribute('data-result-tab')) {
-            document.querySelectorAll(`[data-result-tab]`).forEach(t => {
+            // Deactivate all result tabs
+            document.querySelectorAll('[data-result-tab]').forEach(t => {
               t.classList.remove('active');
             });
-            document.querySelectorAll('.tab-content').forEach(content => {
-              if (content.id.startsWith('result-')) {
-                content.classList.remove('active');
-              }
+            // Deactivate all result tab contents explicitly
+            ['preview-tab','xml-tab','html-tab'].forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.classList.remove('active');
             });
+            // Activate current tab and its content
             this.classList.add('active');
             document.querySelector(`#${target}-tab`).classList.add('active');
           } else {
@@ -670,8 +672,8 @@ https://example.com/page2"></textarea>
         const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n' +
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n          xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9\n          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">\n';
         
-        const changeFreq = document.getElementById('change-freq').value || 'daily';
-        const priority = document.getElementById('priority').value || '0.5';
+        const changeFreq = document.getElementById('change-freq').value;
+        const priority = document.getElementById('priority').value;
         
         let xmlContent = xmlHeader;
         
@@ -863,7 +865,7 @@ https://example.com/page2"></textarea>
         notification.style.bottom = '20px';
         notification.style.right = '20px';
         notification.style.backgroundColor = '#4CAF50';
-        notification.style.color: 'white';
+        notification.style.color = '#ffffff';
         notification.style.padding = '12px 24px';
         notification.style.borderRadius = '4px';
         notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
