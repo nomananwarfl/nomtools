@@ -78,7 +78,6 @@
         <p>${tool.description}</p>
         <div class="actions">
           <a class="btn-primary" href="${tool.href}" aria-label="Open ${tool.name}">Open</a>
-          <button class="btn-secondary" data-tool-id="${tool.id}" aria-label="Save ${tool.name}">Save</button>
         </div>
       `;
       const grid = grids[tool.category];
