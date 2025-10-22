@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+Diallow: /privacy-policy
+Diallow: /terms-and-conditions
+Diallow: /contact
+
 Sitemap: https://nomtool.space/sitemap.xml
