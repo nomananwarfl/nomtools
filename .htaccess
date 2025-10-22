@@ -1,5 +1,4 @@
  RewriteEngine on
- 
  #redirect /file.html to /file
  RewriteCond %{THE_REQUEST} \s/([^.]+)\.html [NC]
  RewriteRule ^ /%1 [NE,L,R]
