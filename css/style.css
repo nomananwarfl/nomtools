@@ -149,7 +149,7 @@ body{
 
 /* Responsive adjustments */
 @media(max-width:1023px){
-  .master-nav-inner{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;padding:8px 12px;gap:16px}
+  .master-nav-inner{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;padding:8px 20px 20px 172px;gap:24px}
 }
 
 @media(max-width:768px){
