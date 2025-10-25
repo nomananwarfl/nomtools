@@ -150,6 +150,45 @@
     }catch(e){ /* noop */ }
   })();
 
+  function setupMobileNav(){
+    try{
+      const navbar = d.querySelector('.navbar');
+      if(!navbar) return;
+      const menu = navbar.querySelector('.nav-menu');
+      if(!menu) return;
+      if(navbar.querySelector('.nav-toggle')) return;
+      const btn = d.createElement('button');
+      btn.className = 'nav-toggle';
+      btn.setAttribute('aria-label','Toggle navigation');
+      btn.setAttribute('aria-expanded','false');
+      const id = 'primary-menu';
+      menu.id = menu.id || id;
+      btn.setAttribute('aria-controls', menu.id);
+      ['bar','bar','bar'].forEach(()=>{ const s=d.createElement('span'); s.className='bar'; btn.appendChild(s); });
+      navbar.insertBefore(btn, menu);
+      const closeAll = ()=>{ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); };
+      btn.addEventListener('click', ()=>{
+        const open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      menu.addEventListener('click', (e)=>{
+        const a = e.target.closest('a[href]');
+        if(a) closeAll();
+      });
+      d.addEventListener('click', (e)=>{
+        if(!menu.classList.contains('open')) return;
+        if(e.target === btn || btn.contains(e.target)) return;
+        if(e.target === menu || menu.contains(e.target)) return;
+        closeAll();
+      });
+      d.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape') closeAll();
+      });
+      const mql = window.matchMedia('(min-width: 769px)');
+      mql.addEventListener('change', (ev)=>{ if(ev.matches) closeAll(); });
+    }catch(e){}
+  }
+
   // Simple analytics stub: count clicks on tool cards (localStorage)
   d.addEventListener('click', (e)=>{
     const a = e.target.closest('a[href]');
@@ -164,6 +203,7 @@
 
   // Initial render
   renderTools('');
+  setupMobileNav();
   // Email helper used by header topbar
   window.openEmail = function(to, subject){
     try{
