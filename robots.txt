@@ -7,7 +7,6 @@ Diallow: /contact
 Diallow: /advance-tools
 Diallow: /tools/backlink-checker
 Diallow: /tools/serp-preview
-Diallow: /tools/serp-preview
 Diallow: /tools/sitemap-generator
 Diallow: /tools/robots-tester
 
