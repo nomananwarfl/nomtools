@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Nom.Online - Free Online Tools for Everyone</title>
     <meta name="description" content="Free online tools for text, image, developer, and utility needs. Word counter, password generator, QR code generator, image resizer, unit converter and more." />
     <link rel="canonical" href="https://nomtool.space/" />
@@ -22,6 +22,8 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="icon" href="assets/icons/favicon.ico" />
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/nomtool-styles.css">
     <link rel="preload" href="js/navigation.js" as="script">
     <script type="application/ld+json">
@@ -58,40 +60,66 @@
                     <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.5 9.87v-6.99H7.9V12h2.6V9.8c0-2.57 1.53-3.99 3.87-3.99 1.12 0 2.29.2 2.29.2v2.52h-1.29c-1.27 0-1.66.79-1.66 1.6V12h2.83l-.45 2.88h-2.38v6.99A10 10 0 0 0 22 12z" fill="currentColor"/></svg>
                     </a>
-                    <a href="https://www.linkedin.com/company/" target="_blank" rel="noopener" aria-label="LinkedIn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.82-2.05 3.74-2.05 4 0 4.74 2.63 4.74 6.05V23h-4v-7.06c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.82-2.7 3.72V23h-4V8z" fill="currentColor"/></svg>
-                    </a>
                 </div>
             </div>
         </div>
-        <nav class="master-nav" role="navigation" aria-label="Main">
-            <div class="master-nav-inner">
-                <button class="master-nav-toggle" aria-expanded="false" aria-controls="master-nav-menu" aria-label="Toggle navigation">
-                    <span class="hamburger">
-                        <span class="bar"></span>
-                        <span class="bar"></span>
-                        <span class="bar"></span>
-                    </span>
-                </button>
-                <ul class="master-nav-menu" id="master-nav-menu">
-                    <li><a href="/" class="active" aria-current="page">Home</a></li>
-                    <li><a href="/about">About Us</a></li>
-                    <li><a href="/advance-tools">Advance Tools</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                </ul>
-                <div class="master-nav-overlay"></div>
-            </div>
-        </nav>
-        <nav class="navbar" role="navigation" aria-label="Main">
-            <img src="/images/logo.png" alt="logo">
-            <div class="nav-menu">
-                <a href="#text-tools">Text Tools</a>
-                <a href="#image-tools">Image Tools</a>
-                <a href="#dev-tools">Developer Tools</a>
-                <a href="#utilities">Utilities</a>
-                <a href="#seo-tools">Essential SEO Tools</a>
-            </div>
-        </nav>
+
+            <nav class="main-nav" role="navigation" aria-label="Main Navigation">
+                <div class="nav-container">
+                    <div class="nav-brand">
+                        <a href="/" class="logo">
+                            <img src="/images/logo.png" alt="NomTool Logo" class="logo-img">
+                            <span class="logo-text">NomTool</span>
+                        </a>
+                        <button class="nav-toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle navigation">
+                            <span class="hamburger"></span>
+                        </button>
+                    </div>
+
+                    <div class="nav-menu-container" id="main-menu">
+                        <ul class="main-menu">
+                            <li class="menu-item">
+                                <a href="/" class="menu-link active" aria-current="page">Home</a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/about.html" class="menu-link">About</a>
+                            </li>
+                            <li class="menu-item has-submenu">
+                                <a href="#" class="menu-link" aria-haspopup="true" aria-expanded="false">Tools</a>
+                                <button class="submenu-toggle" aria-expanded="false" aria-label="Toggle submenu">
+                                    <span class="plus">+</span>
+                                </button>
+                                <ul class="submenu">
+                                    <li><a href="#text-tools">Text Tools</a></li>
+                                    <li><a href="#image-tools">Image Tools</a></li>
+                                    <li><a href="#dev-tools">Developer Tools</a></li>
+                                    <li><a href="#utilities">Utilities</a></li>
+                                    <li><a href="#seo-tools">SEO Tools</a></li>
+                                </ul>
+                            </li>
+                            <li class="menu-item">
+                                <a href="/contact.html" class="menu-link">Contact</a>
+                            </li>
+                        </ul>
+
+                        <div class="nav-actions">
+                            <div class="search-container">
+                                <button class="search-toggle" aria-label="Search" aria-expanded="false">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                                <div class="search-box">
+                                    <input type="search" placeholder="Search tools..." aria-label="Search tools">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="nav-overlay"></div>
+        </header>
     </header>
 
     <main id="main" tabindex="-1">
@@ -246,6 +274,6 @@
     </footer>
 
     <script src="js/main.js"></script>
-    <script src="js/navigation.js" defer></script>
+    <script src="js/mobile-nav.js" defer></script>
 </body>
 </html>
