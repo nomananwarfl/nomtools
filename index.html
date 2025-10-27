@@ -23,6 +23,7 @@
     <link rel="icon" href="assets/icons/favicon.ico" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/nomtool-styles.css">
+    <link rel="preload" href="js/navigation.js" as="script">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -63,13 +64,23 @@
                 </div>
             </div>
         </div>
-        <nav class="master-nav" role="navigation" aria-label="Master">
+        <nav class="master-nav" role="navigation" aria-label="Main">
             <div class="master-nav-inner">
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/advance-tools">Advance Tools</a>
-                <a href="/contact">Contact Us</a>
-             </div>
+                <button class="master-nav-toggle" aria-expanded="false" aria-controls="master-nav-menu" aria-label="Toggle navigation">
+                    <span class="hamburger">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </span>
+                </button>
+                <ul class="master-nav-menu" id="master-nav-menu">
+                    <li><a href="/" class="active" aria-current="page">Home</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/advance-tools">Advance Tools</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                </ul>
+                <div class="master-nav-overlay"></div>
+            </div>
         </nav>
         <nav class="navbar" role="navigation" aria-label="Main">
             <img src="/images/logo.png" alt="logo">
@@ -235,5 +246,6 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/navigation.js" defer></script>
 </body>
 </html>
