@@ -686,65 +686,97 @@
 
       async function performSearch() {
         const k = (kw.value||'').trim();
-        const c = region.value;
+        const c = region ? region.value : 'GLOBAL';
+        const src = source ? source.value : 'google';
+        
+        console.log('Starting search with:', {k, c, src});
         
         if(!k) {
-          results.innerHTML = '<p>Please enter a keyword.</p>';
-          results.style.display = 'block';
+          showError('Please enter a keyword.');
           return;
         }
         
         // Show loading state
-        btn.disabled = true;
-        btn.innerHTML = 'Searching...';
-        results.style.display = 'block';
-        results.innerHTML = '<p>Searching for keyword suggestions... <span class="loading-spinner"></span></p>';
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = 'Searching...';
+        }
+        
+        showMessage('Searching for keyword suggestions...', true);
         
         try {
           // Clear previous results
-          tbody.innerHTML = '';
+          if (tbody) tbody.innerHTML = '';
           
           // Set active tab
-          tabFind.classList.add('active');
-          tabFind.setAttribute('aria-selected', 'true');
-          tabVolume.classList.remove('active');
-          tabVolume.setAttribute('aria-selected', 'false');
-          volSection.style.display = 'none';
+          if (tabFind && tabVolume) {
+            tabFind.classList.add('active');
+            tabFind.setAttribute('aria-selected', 'true');
+            tabVolume.classList.remove('active');
+            tabVolume.setAttribute('aria-selected', 'false');
+          }
+          
+          if (volSection) volSection.style.display = 'none';
           
           // Get suggestions
-          let ideas = await fetchSuggestionsCustom(k, c, source.value);
+          console.log('Fetching suggestions for:', k);
+          let ideas = await fetchSuggestionsCustom(k, c, src);
+          console.log('Received suggestions:', ideas);
           
           // If no results, show a message
           if (!ideas || ideas.length === 0) {
-            results.innerHTML = '<p>No suggestions found. Try a different keyword.</p>';
+            showMessage('No suggestions found. Try a different keyword.');
             return;
           }
           
           // Render the table with the suggestions
           console.log('Rendering table with ideas:', ideas);
-          renderTableWithMetrics(ideas);
-          results.style.display = 'none';
+          await renderTableWithMetrics(ideas);
           
         } catch (error) {
           console.error('Search error:', error);
-          results.innerHTML = `
-            <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
-              <p>Error: ${error.message || 'Failed to fetch suggestions'}</p>
-              <p style="font-size: 0.9em; margin-top: 8px; color: #7f1d1d;">Please try again or check the console for details.</p>
-            </div>
-          `;
+          showError(`Error: ${error.message || 'Failed to fetch suggestions. Please try again.'}`);
         } finally {
           // Reset button state
-          btn.disabled = false;
-          btn.innerHTML = '🔍';
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '🔍';
+          }
         }
+      }
+      
+      function showMessage(message, isLoading = false) {
+        if (!results) return;
+        
+        const loadingSpinner = isLoading ? ' <span class="loading-spinner"></span>' : '';
+        results.style.display = 'block';
+        results.innerHTML = `<p>${message}${loadingSpinner}</p>`;
+      }
+      
+      function showError(message) {
+        if (!results) return;
+        
+        results.style.display = 'block';
+        results.innerHTML = `
+          <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
+            <p>${message}</p>
+          </div>
+        `;
       }
       
       // Set up event listeners if elements exist
       if(btn && kw) {
+        console.log('Setting up event listeners...');
+        
+        // Button click to search
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          performSearch();
+        });
+        
         // Enter key to search
-        kw.addEventListener('keydown', (e)=>{
-          if(e.key === 'Enter'){
+        kw.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter') {
             e.preventDefault();
             performSearch();
           }
