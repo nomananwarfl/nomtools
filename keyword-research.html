@@ -317,19 +317,85 @@
 
       async function fetchSuggestionsCustom(query, countryCode, sourceType) {
         try {
-          // Using a free API for keyword suggestions
-          const response = await fetch(`https://suggestqueries.google.com/complete/search?q=${encodeURIComponent(query)}&client=firefox&hl=${lang.value}&gl=${countryCode}`);
-          const data = await response.json();
+          // Generate suggestions locally using a more sophisticated algorithm
+          const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+          const firstWord = words[0] || '';
+          const lastWord = words[words.length - 1] || '';
           
-          // Extract suggestions from the response
-          const suggestions = data[1] || [];
+          // Common prefixes and suffixes based on source type
+          const modifiers = {
+            question: ['how to', 'what is', 'where to', 'when to', 'why', 'can you', 'should i', 'does', 'is it', 'are there'],
+            modifier: ['best', 'top', 'new', 'free', 'premium', 'cheap', 'affordable', 'quality', 'professional'],
+            action: ['buy', 'find', 'get', 'download', 'watch', 'learn', 'make', 'create', 'use', 'install'],
+            year: [new Date().getFullYear().toString(), '2025', '2024', '2023'],
+            source: {
+              youtube: ['tutorial', 'review', 'how to', 'vs', 'comparison', 'unboxing', 'walkthrough', 'guide'],
+              amazon: ['buy', 'price', 'sale', 'discount', 'review', 'deals', 'on sale', 'coupon'],
+              google: ['near me', 'online', 'free', 'download', 'how to', 'vs', 'alternatives'],
+              default: ['tips', 'tricks', 'ideas', 'for beginners', 'for professionals']
+            }
+          };
           
-          // If no suggestions from API, use fallback
-          if (suggestions.length === 0) {
-            return getFallbackSuggestions(query, countryCode, sourceType);
+          // Get source-specific modifiers
+          const sourceModifiers = modifiers.source[sourceType] || modifiers.source.default;
+          
+          // Generate variations
+          let suggestions = new Set();
+          
+          // Add question variations
+          modifiers.question.forEach(q => {
+            suggestions.add(`${q} ${query}`);
+            suggestions.add(`${query} ${q}`);
+          });
+          
+          // Add modifier variations
+          modifiers.modifier.forEach(m => {
+            suggestions.add(`${m} ${query}`);
+            suggestions.add(`${query} ${m}`);
+            // Add with source modifiers
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${m} ${query} ${sm}`);
+              suggestions.add(`${query} ${sm} ${m}`);
+            });
+          });
+          
+          // Add action variations
+          modifiers.action.forEach(a => {
+            suggestions.add(`${a} ${query}`);
+            // Add with source modifiers
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${a} ${query} ${sm}`);
+            });
+          });
+          
+          // Add year variations
+          modifiers.year.forEach(y => {
+            suggestions.add(`${query} ${y}`);
+            suggestions.add(`${y} ${query}`);
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${query} ${sm} ${y}`);
+            });
+          });
+          
+          // Add source-specific variations
+          sourceModifiers.forEach(sm => {
+            suggestions.add(`${query} ${sm}`);
+            suggestions.add(`${sm} ${query}`);
+          });
+          
+          // Add country-specific variations if not global
+          if (countryCode !== 'GLOBAL') {
+            suggestions.add(`${query} in ${countryCode}`);
+            suggestions.add(`${query} ${countryCode}`);
           }
           
-          return suggestions;
+          // Convert to array, filter out any empty strings, and limit to 20 results
+          let results = Array.from(suggestions)
+            .filter(s => s.trim() !== '' && s.toLowerCase() !== query.toLowerCase())
+            .slice(0, 20);
+          
+          console.log('Generated suggestions:', results);
+          return results;
         } catch (error) {
           console.error('Error fetching suggestions:', error);
           return getFallbackSuggestions(query, countryCode, sourceType);
