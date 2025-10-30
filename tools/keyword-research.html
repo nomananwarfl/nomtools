@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7WRE7G63RN"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-7WRE7G63RN');
-    </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7WRE7G63RN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7WRE7G63RN');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Keyword Research (Country-wise) - NomTool</title>
@@ -25,6 +25,35 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/tools.css" />
+  <style>
+    .kwt-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 16px}
+    .kwt-nav{display:flex;align-items:center;gap:16px}
+    .kwt-link{color:inherit;text-decoration:none;opacity:.85}
+    .kwt-link:hover{opacity:1}
+    .kwt-hero{text-align:center;padding:32px 12px}
+    .kwt-hero h1{font-size:28px;margin:8px 0 6px}
+    .kwt-icons{display:flex;justify-content:center;gap:10px;margin:10px 0 18px;flex-wrap:wrap}
+    .kwt-icon{border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-size:12px}
+    .kwt-search{max-width:980px;margin:0 auto;padding:0 12px}
+    .kwt-bar{display:grid;grid-template-columns:140px 1fr 220px 160px 56px;gap:8px;align-items:center}
+    .kwt-bar select,.kwt-bar input{height:44px;border:1px solid #e5e7eb;border-radius:8px;padding:0 12px;font-size:14px}
+    .kwt-go{height:44px;border-radius:8px;border:none;background:#6d28d9;color:#fff;cursor:pointer}
+    .kwt-go:hover{background:#5b21b6}
+    .kwt-controls{max-width:980px;margin:18px auto 0;padding:0 12px;display:flex;gap:12px;flex-wrap:wrap}
+    .kwt-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid #e5e7eb;border-radius:999px;padding:8px 12px;font-size:13px}
+    .kwt-results{max-width:1100px;margin:20px auto;padding:0 12px}
+    .kwt-table{width:100%;border-collapse:separate;border-spacing:0}
+    .kwt-table th,.kwt-table td{border-bottom:1px solid #edf2f7;padding:10px 12px;text-align:left;font-size:14px}
+    .kwt-table th{background:#fafafa;font-weight:600}
+    .kwt-tabs{max-width:1100px;margin:20px auto 0;padding:0 12px;display:flex;gap:8px;border-bottom:1px solid #eee}
+    .kwt-tab{appearance:none;background:none;border:none;padding:10px 14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent}
+    .kwt-tab.active{color:#6d28d9;border-color:#6d28d9}
+    .kwt-vol{max-width:980px;margin:16px auto 0;padding:0 12px;display:none}
+    .kwt-vol textarea{width:100%;min-height:120px;border:1px solid #e5e7eb;border-radius:8px;padding:10px;font-size:14px}
+    .kwt-vol .row{display:flex;gap:8px;margin-top:8px}
+    .kwt-btn{height:40px;border-radius:8px;border:none;background:#6d28d9;color:#fff;padding:0 14px;cursor:pointer}
+    @media (max-width:900px){.kwt-bar{grid-template-columns:1fr}}
+  </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -47,32 +76,80 @@
   </header>
 
   <main class="tool-page" id="main" tabindex="-1">
-    <section class="hero" aria-labelledby="title">
-      <h1 id="title">Keyword Research (Country-wise)</h1>
-      <p>Enter a seed keyword and choose a country to explore ideas. (Placeholder UI)</p>
-    </section>
-
-    <section class="card" aria-label="Keyword Research Form">
-      <div class="form-row">
-        <label for="kw">Keyword</label>
-        <input id="kw" type="text" placeholder="e.g., best running shoes" />
+    <div class="kwt-hero">
+      <h1 id="title">Find Great Keywords Using Google Autocomplete</h1>
+      <div class="kwt-icons" aria-label="Sources">
+        <span class="kwt-icon">Google</span>
+        <span class="kwt-icon">YouTube</span>
+        <span class="kwt-icon">Amazon</span>
+        <span class="kwt-icon">Bing</span>
+        <span class="kwt-icon">Play</span>
+        <span class="kwt-icon">Instagram</span>
+        <span class="kwt-icon">Twitter</span>
       </div>
-      <div class="form-row">
-        <label for="country">Country</label>
-        <select id="country">
-          <option>Loading countries…</option>
+    </div>
+
+    <div class="kwt-search" aria-label="Keyword Search Bar">
+      <div class="kwt-bar">
+        <select id="source" aria-label="Source">
+          <option value="all">All</option>
+          <option value="google" selected>Google</option>
+          <option value="youtube">YouTube</option>
+          <option value="amazon">Amazon</option>
+          <option value="bing">Bing</option>
         </select>
+        <input id="kw" type="text" placeholder="Type a keyword and press enter" />
+        <select id="region" aria-label="Region">
+          <option value="GLOBAL">Global / Worldwide (All Countries)</option>
+          <option value="loading" disabled>Loading countries…</option>
+        </select>
+        <select id="lang" aria-label="Language">
+          <option value="en" selected>English</option>
+          <option value="es">Spanish</option>
+          <option value="hi">Hindi</option>
+          <option value="ur">Urdu</option>
+        </select>
+        <button class="kwt-go" id="btnSearch" aria-label="Search">🔍</button>
       </div>
-      <div class="actions">
-        <button class="btn-primary" id="btnSearch" aria-label="Search keywords">Search</button>
-        <a class="btn-secondary" href="/" aria-label="Back to home">Back</a>
+      <div class="kwt-controls" aria-label="Metric toggles">
+        <span class="kwt-chip">CTR</span>
+        <span class="kwt-chip">CPC</span>
+        <span class="kwt-chip">Volume</span>
+        <span class="kwt-chip">Difficulty</span>
+        <span class="kwt-chip">Traffic</span>
       </div>
-    </section>
+    </div>
 
-    <section class="card" aria-label="Results">
-      <h2>Results</h2>
-      <div id="results" class="results"></div>
-    </section>
+    <div class="kwt-results" aria-label="Results">
+      <div class="kwt-tabs" role="tablist">
+        <button id="tabFind" class="kwt-tab active" role="tab" aria-selected="true">Find Keywords</button>
+        <button id="tabVolume" class="kwt-tab" role="tab" aria-selected="false">Check Search Volume</button>
+      </div>
+
+      <div class="kwt-vol" id="volSection" aria-label="Check Search Volume">
+        <label for="kwList" style="display:block;margin:6px 0 6px;font-weight:600">Enter keywords (one per line or comma-separated)</label>
+        <textarea id="kwList" placeholder="keyword one\nkeyword two, keyword three"></textarea>
+        <div class="row">
+          <button class="kwt-btn" id="btnVolume">Check Volume</button>
+          <small style="opacity:.7">Region and language use the selectors above.</small>
+        </div>
+      </div>
+
+      <table class="kwt-table" role="table" aria-describedby="title">
+        <thead>
+          <tr>
+            <th scope="col">Keyword</th>
+            <th scope="col">CTR</th>
+            <th scope="col">CPC</th>
+            <th scope="col">Volume</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Traffic</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="results" class="results" aria-live="polite" style="display:none"></div>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -84,8 +161,16 @@
       const d = document;
       const btn = d.getElementById('btnSearch');
       const kw = d.getElementById('kw');
-      const country = d.getElementById('country');
+      const region = d.getElementById('region');
+      const lang = d.getElementById('lang');
+      const source = d.getElementById('source');
+      const tbody = d.getElementById('tbody');
       const results = d.getElementById('results');
+      const tabFind = d.getElementById('tabFind');
+      const tabVolume = d.getElementById('tabVolume');
+      const volSection = d.getElementById('volSection');
+      const kwList = d.getElementById('kwList');
+      const btnVolume = d.getElementById('btnVolume');
 
       // Populate countries from REST Countries API (fallback to a small list if it fails)
       (async function loadCountries(){
@@ -105,22 +190,26 @@
             .map(x=>({code: x.cca2, name: (x.name && x.name.common) || x.cca2}))
             .filter(x=>x.code && x.name)
             .sort((a,b)=> a.name.localeCompare(b.name));
-          renderCountryOptions(items.length ? items : fallback);
+          renderRegionOptions(items.length ? items : fallback);
         }catch(e){
-          renderCountryOptions(fallback);
+          renderRegionOptions(fallback);
         }
       })();
 
-      function renderCountryOptions(list){
-        country.innerHTML = '';
+      function renderRegionOptions(list){
+        region.innerHTML = '';
+        const global = d.createElement('option');
+        global.value = 'GLOBAL';
+        global.textContent = 'Global / Worldwide (All Countries)';
+        region.appendChild(global);
         list.forEach(({code,name})=>{
           const opt = d.createElement('option');
           opt.value = code;
           opt.textContent = name;
-          country.appendChild(opt);
+          region.appendChild(opt);
         });
-        const us = Array.from(country.options).find(o=>o.value.toUpperCase()==='US');
-        if(us) country.value = 'US';
+        const us = Array.from(region.options).find(o=>o.value.toUpperCase()==='US');
+        if(us) region.value = 'US';
       }
 
       async function fetchSuggestionsSerpApi(query, countryCode){
@@ -152,18 +241,95 @@
         return arr.map(x=>String(x)).filter(Boolean);
       }
 
-      function renderList(list){
-        results.innerHTML = '<ul>' + list.map(i=>`<li>${i}</li>`).join('') + '</ul>';
+      async function fetchMetricsGeneric(keywords, regionCode, language){
+        const base = localStorage.getItem('NOM_METRICS_API_URL');
+        if(!base) return null;
+        const key = localStorage.getItem('NOM_METRICS_API_KEY');
+        const headers = { 'Content-Type': 'application/json' };
+        if(key) headers['Authorization'] = `Bearer ${key}`;
+        const body = { keywords, region: regionCode||'GLOBAL', language: language||'en', source: source.value||'google' };
+        const resp = await fetch(base, { method:'POST', headers, body: JSON.stringify(body) });
+        if(!resp.ok) throw new Error('Metrics API error');
+        const data = await resp.json();
+        // Expect [{keyword, volume, cpc, difficulty, ctr, traffic}] or {data:[...]} shape
+        const arr = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        const map = new Map();
+        arr.forEach(m=>{ if(m && m.keyword){ map.set(String(m.keyword).toLowerCase(), m); } });
+        return map;
+      }
+
+      function calcMetrics(keyword){
+        // Simple deterministic placeholders so rows don't jump on re-render
+        const seed = Array.from(keyword).reduce((a,c)=>a+c.charCodeAt(0),0);
+        const rand = (min,max,f=1)=>{
+          let x = Math.abs(Math.sin(seed))*10000 % 1; // pseudo
+          return Math.round((min + x*(max-min))*f)/f;
+        };
+        const volume = Math.max(90, Math.floor(rand(120, 120000)));
+        const ctr = Math.round(rand(8, 42));
+        const cpc = (rand(0.1, 5, 100));
+        const difficulty = Math.round(rand(10, 85));
+        const traffic = Math.floor(volume * (ctr/100));
+        return {ctr, cpc, volume, difficulty, traffic};
+      }
+
+      function renderTable(list){
+        tbody.innerHTML = list.map(k=>{
+          const m = calcMetrics(k);
+          return `<tr>
+            <td>${k}</td>
+            <td>${m.ctr}%</td>
+            <td>$${m.cpc.toFixed(2)}</td>
+            <td>${m.volume.toLocaleString()}</td>
+            <td>${m.difficulty}</td>
+            <td>${m.traffic.toLocaleString()}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      async function renderTableWithMetrics(list){
+        const uniq = Array.from(new Set(list.map(x=>String(x).trim()).filter(Boolean)));
+        let map = null;
+        try {
+          map = await fetchMetricsGeneric(uniq, region.value, lang.value);
+        } catch(e){ map = null; }
+        tbody.innerHTML = uniq.map(k=>{
+          const key = k.toLowerCase();
+          const mm = map ? map.get(key) : null;
+          const m = mm ? {
+            ctr: mm.ctr ?? 20,
+            cpc: Number(mm.cpc ?? 0),
+            volume: Number(mm.volume ?? 0),
+            difficulty: Number(mm.difficulty ?? 0),
+            traffic: Number(mm.traffic ?? (Number(mm.volume ?? 0) * ((Number(mm.ctr ?? 20))/100)))
+          } : calcMetrics(k);
+          return `<tr>
+            <td>${k}</td>
+            <td>${Math.round(m.ctr)}%</td>
+            <td>$${Number(m.cpc || 0).toFixed(2)}</td>
+            <td>${Number(m.volume||0).toLocaleString()}</td>
+            <td>${Math.round(m.difficulty)}</td>
+            <td>${Number(m.traffic||0).toLocaleString()}</td>
+          </tr>`;
+        }).join('');
       }
 
       if(btn){
+        // Enter key to search
+        kw.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter'){
+            e.preventDefault();
+            btn.click();
+          }
+        });
         btn.addEventListener('click', async ()=>{
           const k = (kw.value||'').trim();
-          const c = country.value;
+          const c = region.value;
           if(!k){
             results.innerHTML = '<p>Please enter a keyword.</p>';
             return;
           }
+          results.style.display = 'block';
           results.innerHTML = '<p>Loading suggestions…</p>';
           try{
             let ideas = null;
@@ -182,7 +348,8 @@
                 `best ${k} in ${c}`
               ];
             }
-            renderList(ideas);
+            await renderTableWithMetrics(ideas);
+            results.style.display = 'none';
           }catch(e){
             const ideas = [
               `${k} near me`,
@@ -190,10 +357,49 @@
               `${k} price in ${c}`,
               `best ${k} in ${c}`
             ];
-            renderList(ideas);
+            await renderTableWithMetrics(ideas);
+            results.style.display = 'none';
           }
         });
       }
+
+      // Tabs
+      function setTab(which){
+        if(which==='find'){
+          tabFind.classList.add('active');
+          tabFind.setAttribute('aria-selected','true');
+          tabVolume.classList.remove('active');
+          tabVolume.setAttribute('aria-selected','false');
+          volSection.style.display = 'none';
+        } else {
+          tabVolume.classList.add('active');
+          tabVolume.setAttribute('aria-selected','true');
+          tabFind.classList.remove('active');
+          tabFind.setAttribute('aria-selected','false');
+          volSection.style.display = 'block';
+        }
+      }
+      tabFind?.addEventListener('click',()=>setTab('find'));
+      tabVolume?.addEventListener('click',()=>setTab('volume'));
+
+      // Volume checker handler
+      btnVolume?.addEventListener('click', async ()=>{
+        const raw = (kwList.value||'').trim();
+        if(!raw){ results.style.display='block'; results.innerHTML='<p>Enter keywords above.</p>'; return; }
+        const list = raw
+          .split(/\n|,/) // newline or comma
+          .map(s=>s.trim())
+          .filter(Boolean);
+        results.style.display='block';
+        results.innerHTML='<p>Fetching metrics…</p>';
+        try{
+          await renderTableWithMetrics(list);
+          results.style.display='none';
+        }catch(e){
+          renderTable(list);
+          results.style.display='none';
+        }
+      });
     })();
   </script>
 </body>
