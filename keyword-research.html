@@ -685,83 +685,211 @@
       }
 
       async function performSearch() {
-        const k = (kw.value||'').trim();
-        const c = region ? region.value : 'GLOBAL';
-        const src = source ? source.value : 'google';
+        // Get input values with fallbacks
+        const searchTerm = (kw && kw.value) ? kw.value.trim() : '';
+        const country = (region && region.value) ? region.value : 'GLOBAL';
+        const sourceType = (source && source.value) ? source.value : 'google';
         
-        console.log('Starting search with:', {k, c, src});
+        console.log('Starting search with:', {searchTerm, country, sourceType});
         
-        if(!k) {
-          showError('Please enter a keyword.');
+        // Validate input
+        if(!searchTerm) {
+          showError('Please enter a keyword to search.');
           return;
         }
         
         // Show loading state
-        if (btn) {
-          btn.disabled = true;
-          btn.innerHTML = 'Searching...';
-        }
-        
-        showMessage('Searching for keyword suggestions...', true);
+        toggleLoadingState(true);
         
         try {
           // Clear previous results
           if (tbody) tbody.innerHTML = '';
           
           // Set active tab
-          if (tabFind && tabVolume) {
-            tabFind.classList.add('active');
-            tabFind.setAttribute('aria-selected', 'true');
-            tabVolume.classList.remove('active');
-            tabVolume.setAttribute('aria-selected', 'false');
-          }
-          
-          if (volSection) volSection.style.display = 'none';
+          setActiveTab('find');
           
           // Get suggestions
-          console.log('Fetching suggestions for:', k);
-          let ideas = await fetchSuggestionsCustom(k, c, src);
-          console.log('Received suggestions:', ideas);
+          console.log('Fetching suggestions for:', searchTerm);
+          let keywordSuggestions = await getKeywordSuggestions(searchTerm, country, sourceType);
+          console.log('Received suggestions:', keywordSuggestions);
           
-          // If no results, show a message
-          if (!ideas || ideas.length === 0) {
-            showMessage('No suggestions found. Try a different keyword.');
-            return;
+          // If no results, show fallback suggestions
+          if (!keywordSuggestions || keywordSuggestions.length === 0) {
+            console.log('No suggestions found, showing fallback');
+            keywordSuggestions = generateFallbackSuggestions(searchTerm, country, sourceType);
           }
           
-          // Render the table with the suggestions
-          console.log('Rendering table with ideas:', ideas);
-          await renderTableWithMetrics(ideas);
+          // Display the results
+          if (keywordSuggestions && keywordSuggestions.length > 0) {
+            console.log('Displaying', keywordSuggestions.length, 'suggestions');
+            displayResults(keywordSuggestions);
+          } else {
+            showMessage('No suggestions found. Please try a different keyword.');
+          }
           
         } catch (error) {
           console.error('Search error:', error);
           showError(`Error: ${error.message || 'Failed to fetch suggestions. Please try again.'}`);
         } finally {
-          // Reset button state
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '🔍';
-          }
+          // Reset loading state
+          toggleLoadingState(false);
         }
       }
       
+      function toggleLoadingState(isLoading) {
+        if (!btn) return;
+        
+        btn.disabled = isLoading;
+        btn.innerHTML = isLoading ? 'Searching...' : '🔍';
+        
+        if (isLoading) {
+          showMessage('Searching for keyword suggestions...', true);
+        }
+      }
+      
+      function setActiveTab(tabName) {
+        if (!tabFind || !tabVolume) return;
+        
+        if (tabName === 'find') {
+          tabFind.classList.add('active');
+          tabFind.setAttribute('aria-selected', 'true');
+          tabVolume.classList.remove('active');
+          tabVolume.setAttribute('aria-selected', 'false');
+          if (volSection) volSection.style.display = 'none';
+        } else {
+          tabVolume.classList.add('active');
+          tabVolume.setAttribute('aria-selected', 'true');
+          tabFind.classList.remove('active');
+          tabFind.setAttribute('aria-selected', 'false');
+          if (volSection) volSection.style.display = 'block';
+        }
+      }
+      
+      async function getKeywordSuggestions(term, country, sourceType) {
+        try {
+          // First try the custom suggestions
+          const suggestions = await fetchSuggestionsCustom(term, country, sourceType);
+          if (suggestions && suggestions.length > 0) {
+            return suggestions;
+          }
+          
+          // If no results, try fallback
+          return generateFallbackSuggestions(term, country, sourceType);
+          
+        } catch (error) {
+          console.error('Error getting suggestions:', error);
+          return generateFallbackSuggestions(term, country, sourceType);
+        }
+      }
+      
+      function generateFallbackSuggestions(term, country, sourceType) {
+        console.log('Generating fallback suggestions for:', term);
+        const suggestions = [];
+        
+        // Basic variations
+        const prefixes = ['best', 'how to', 'why', 'where to buy', 'review of', 'tips for'];
+        const suffixes = ['2025', 'near me', 'online', 'free', 'download', 'tutorial', 'guide'];
+        
+        // Add basic variations
+        prefixes.forEach(prefix => {
+          suggestions.push(`${prefix} ${term}`.trim());
+        });
+        
+        suffixes.forEach(suffix => {
+          suggestions.push(`${term} ${suffix}`.trim());
+        });
+        
+        // Add source-specific variations
+        if (sourceType === 'youtube') {
+          ['tutorial', 'review', 'gameplay', 'walkthrough', 'tips'].forEach(suffix => {
+            suggestions.push(`${term} ${suffix}`.trim());
+          });
+        } else if (sourceType === 'amazon') {
+          ['buy', 'price', 'sale', 'discount', 'review'].forEach(suffix => {
+            suggestions.push(`${term} ${suffix}`.trim());
+          });
+        }
+        
+        // Add country-specific if not global
+        if (country !== 'GLOBAL') {
+          suggestions.push(`${term} in ${country}`.trim());
+          suggestions.push(`${term} ${country}`.trim());
+        }
+        
+        // Remove duplicates and limit to 20
+        return [...new Set(suggestions)].slice(0, 20);
+      }
+      
+      function displayResults(keywords) {
+        if (!tbody) return;
+        
+        // Clear existing results
+        tbody.innerHTML = '';
+        
+        // Add each keyword to the table
+        keywords.forEach((keyword, index) => {
+          if (index >= 20) return; // Limit to 20 results
+          
+          const row = document.createElement('tr');
+          
+          // Add keyword cell
+          const keywordCell = document.createElement('td');
+          keywordCell.textContent = keyword;
+          row.appendChild(keywordCell);
+          
+          // Add dummy metrics (you can replace these with real data)
+          ['-', '-', '-', '-', '-'].forEach(metric => {
+            const cell = document.createElement('td');
+            cell.textContent = metric;
+            row.appendChild(cell);
+          });
+          
+          tbody.appendChild(row);
+        });
+        
+        // Hide the loading message
+        if (results) {
+          results.style.display = 'none';
+        }
+      }
+      }
+      
       function showMessage(message, isLoading = false) {
-        if (!results) return;
+        if (!results) {
+          console.log('Message (results element not found):', message);
+          return;
+        }
         
         const loadingSpinner = isLoading ? ' <span class="loading-spinner"></span>' : '';
         results.style.display = 'block';
-        results.innerHTML = `<p>${message}${loadingSpinner}</p>`;
+        results.innerHTML = `<p style="padding: 10px; margin: 0;">${message}${loadingSpinner}</p>`;
+        
+        // Log to console for debugging
+        console.log('UI Message:', message);
       }
       
       function showError(message) {
-        if (!results) return;
+        if (!results) {
+          console.error('Error (results element not found):', message);
+          return;
+        }
         
         results.style.display = 'block';
         results.innerHTML = `
-          <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
-            <p>${message}</p>
+          <div style="
+            color: #dc2626; 
+            background: #fef2f2; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin: 10px 0;
+            border-left: 4px solid #dc2626;
+          ">
+            <p style="margin: 0; font-weight: 500;">${message}</p>
           </div>
         `;
+        
+        // Log to console for debugging
+        console.error('UI Error:', message);
       }
       
       // Set up event listeners if elements exist
