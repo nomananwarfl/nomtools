@@ -531,69 +531,74 @@
         renderTableWithMetrics(map);
       }
 
-      if(btn) {
+      async function performSearch() {
+        const k = (kw.value||'').trim();
+        const c = region.value;
+        
+        if(!k) {
+          results.innerHTML = '<p>Please enter a keyword.</p>';
+          results.style.display = 'block';
+          return;
+        }
+        
+        // Show loading state
+        btn.disabled = true;
+        btn.innerHTML = 'Searching...';
+        results.style.display = 'block';
+        results.innerHTML = '<p>Searching for keyword suggestions... <span class="loading-spinner"></span></p>';
+        
+        try {
+          // Clear previous results
+          tbody.innerHTML = '';
+          
+          // Set active tab
+          tabFind.classList.add('active');
+          tabFind.setAttribute('aria-selected', 'true');
+          tabVolume.classList.remove('active');
+          tabVolume.setAttribute('aria-selected', 'false');
+          volSection.style.display = 'none';
+          
+          // Get suggestions
+          let ideas = await fetchSuggestionsCustom(k, c, source.value);
+          
+          // If no results, show a message
+          if (!ideas || ideas.length === 0) {
+            results.innerHTML = '<p>No suggestions found. Try a different keyword.</p>';
+            return;
+          }
+          
+          // Render the table with the suggestions
+          console.log('Rendering table with ideas:', ideas);
+          renderTableWithMetrics(ideas);
+          results.style.display = 'none';
+          
+        } catch (error) {
+          console.error('Search error:', error);
+          results.innerHTML = `
+            <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
+              <p>Error: ${error.message || 'Failed to fetch suggestions'}</p>
+              <p style="font-size: 0.9em; margin-top: 8px; color: #7f1d1d;">Please try again or check the console for details.</p>
+            </div>
+          `;
+        } finally {
+          // Reset button state
+          btn.disabled = false;
+          btn.innerHTML = '🔍';
+        }
+      }
+      
+      // Set up event listeners if elements exist
+      if(btn && kw) {
         // Enter key to search
         kw.addEventListener('keydown', (e)=>{
           if(e.key === 'Enter'){
             e.preventDefault();
-            btn.click();
+            performSearch();
           }
         });
         
-        btn.addEventListener('click', async ()=>{
-          const k = (kw.value||'').trim();
-          const c = region.value;
-          
-          if(!k) {
-            results.innerHTML = '<p>Please enter a keyword.</p>';
-            results.style.display = 'block';
-            return;
-          }
-          
-          // Show loading state
-          btn.disabled = true;
-          btn.innerHTML = 'Searching...';
-          results.style.display = 'block';
-          results.innerHTML = '<p>Searching for keyword suggestions... <span class="loading-spinner"></span></p>';
-          
-          try {
-            // Clear previous results
-            tbody.innerHTML = '';
-            
-            // Set active tab
-            tabFind.classList.add('active');
-            tabFind.setAttribute('aria-selected', 'true');
-            tabVolume.classList.remove('active');
-            tabVolume.setAttribute('aria-selected', 'false');
-            volSection.style.display = 'none';
-            
-            // Try to get suggestions from the custom function (which uses Google's API)
-            let ideas = await fetchSuggestionsCustom(k, c, source.value);
-            
-            // If no results, show a message
-            if (!ideas || ideas.length === 0) {
-              results.innerHTML = '<p>No suggestions found. Try a different keyword or check your connection.</p>';
-              return;
-            }
-            
-            // Render the table with the suggestions
-            await renderTableWithMetrics(ideas);
-            results.style.display = 'none';
-            
-          } catch (error) {
-            console.error('Search error:', error);
-            results.innerHTML = `
-              <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
-                <p>Error fetching suggestions. Please try again later.</p>
-                <p style="font-size: 0.9em; margin-top: 8px; color: #7f1d1d;">${error.message || 'Unknown error occurred'}</p>
-              </div>
-            `;
-          } finally {
-            // Reset button state
-            btn.disabled = false;
-            btn.innerHTML = '🔍';
-          }
-        });
+        // Button click to search
+        btn.addEventListener('click', performSearch);
       }
       
       // Tab switching
