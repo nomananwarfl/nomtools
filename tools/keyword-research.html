@@ -316,49 +316,288 @@
       }
 
       async function fetchSuggestionsCustom(query, countryCode, sourceType) {
-        // Fallback implementation if SerpAPI fails or isn't configured
+        try {
+          // Check if the query is a game title (like Mortal Kombat Trilogy)
+          const isGameTitle = /mortal kombat|call of duty|grand theft auto|assassin's? creed|fifa|nba|nfl|madden|nhl|pes|pro evolution soccer|street fighter|tekken|super mario|zelda|pokemon|final fantasy|god of war|halo|gears of war|uncharted|the last of us|resident evil|silent hill|metal gear|devil may cry|bayonetta|mega man|sonic|crash bandicoot|spyro|ratchet & clank|jak and daxter|sly cooper|infamous|horizon|ghost of tsushima|bloodborne|sekiro|dark souls|elden ring|demon's? souls|dark souls|dragon age|mass effect|the witcher|cyberpunk|red dead redemption|battlefield|call of duty|overwatch|valorant|league of legends|dota 2|counter.?strike|cs:?go|fortnite|apex legends|pubg|playerunknown's? battlegrounds|minecraft|stardew valley|terraria|among us|fall guys|rocket league|fifa|nba 2k|nhl|madden|nfl|mlb the show|wwe 2k|ufc|ea sports|ubisoft|activision|blizzard|bethesda|rockstar|take.?two|2k games|warner bros|warner bros\.? games|warner bros\.? interactive|warner bros\.? interactive entertainment|warner bros\.? interactive entertainment inc\.?/i.test(query);
+          
+          // Generate suggestions locally using a more sophisticated algorithm
+          const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+          const firstWord = words[0] || '';
+          const lastWord = words[words.length - 1] || '';
+          
+          // Common prefixes and suffixes based on source type
+          const modifiers = {
+            question: isGameTitle ? 
+              ['how to', 'where to', 'tips for', 'cheats for', 'walkthrough for', 'review of', 'gameplay of'] : 
+              ['how to', 'what is', 'where to', 'when to', 'why', 'can you', 'should i', 'does', 'is it', 'are there'],
+              
+            modifier: isGameTitle ?
+              ['best', 'new', 'free', 'premium', 'cheap', 'discount', 'official', 'game', 'guide', 'tutorial', 'walkthrough', 'review'] :
+              ['best', 'top', 'new', 'free', 'premium', 'cheap', 'affordable', 'quality', 'professional'],
+              
+            action: isGameTitle ?
+              ['buy', 'download', 'play', 'watch', 'stream', 'find', 'get', 'install'] :
+              ['buy', 'find', 'get', 'download', 'watch', 'learn', 'make', 'create', 'use', 'install'],
+              
+            year: [new Date().getFullYear().toString(), '2025', '2024', '2023'],
+            
+            gameSpecific: isGameTitle ? 
+              ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats', 'ending', 'boss fight', 'characters', 'unlockables', 'secrets', 'easter eggs', 'download', 'pc', 'ps5', 'xbox', 'nintendo switch', 'steam', 'epic games', 'game pass', 'ps plus', 'xbox game pass'] : [],
+              
+            source: {
+              youtube: isGameTitle ? 
+                ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'boss fight', 'ending', 'characters'] :
+                ['tutorial', 'review', 'how to', 'vs', 'comparison', 'unboxing', 'walkthrough', 'guide'],
+                
+              amazon: isGameTitle ?
+                ['buy', 'price', 'sale', 'discount', 'ps5', 'xbox', 'nintendo switch', 'pc', 'steam', 'game', 'collector\'s edition'] :
+                ['buy', 'price', 'sale', 'discount', 'review', 'deals', 'on sale', 'coupon'],
+                
+              google: isGameTitle ?
+                ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats', 'ending', 'boss fight'] :
+                ['near me', 'online', 'free', 'download', 'how to', 'vs', 'alternatives'],
+                
+              default: isGameTitle ?
+                ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats'] :
+                ['tips', 'tricks', 'ideas', 'for beginners', 'for professionals']
+            }
+          };
+          
+          // Get source-specific modifiers
+          const sourceModifiers = modifiers.source[sourceType] || modifiers.source.default;
+          
+          // Generate variations
+          let suggestions = new Set();
+          
+          // Add the original query as the first suggestion
+          suggestions.add(query);
+          
+          // Add question variations
+          modifiers.question.forEach(q => {
+            suggestions.add(`${q} ${query}`);
+            if (isGameTitle) {
+              suggestions.add(`${query} - ${q.replace(' for', '')}`);
+              suggestions.add(`${query} - ${q}`);
+            } else {
+              suggestions.add(`${query} ${q}`);
+            }
+          });
+          
+          // Add modifier variations
+          modifiers.modifier.forEach(m => {
+            suggestions.add(`${m} ${query}`);
+            suggestions.add(`${query} ${m}`);
+            
+            // Add with source modifiers
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${m} ${query} ${sm}`);
+              suggestions.add(`${query} ${sm} ${m}`);
+              if (isGameTitle) {
+                suggestions.add(`${query} - ${m} ${sm}`);
+                suggestions.add(`${m} ${sm} ${query}`);
+              }
+            });
+          });
+          
+          // Add action variations
+          modifiers.action.forEach(a => {
+            suggestions.add(`${a} ${query}`);
+            if (isGameTitle) {
+              suggestions.add(`${query} - ${a}`);
+              suggestions.add(`${a} ${query} game`);
+            }
+            
+            // Add with source modifiers
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${a} ${query} ${sm}`);
+              if (isGameTitle) {
+                suggestions.add(`${query} - ${a} ${sm}`);
+              }
+            });
+          });
+          
+          // Add year variations
+          modifiers.year.forEach(y => {
+            suggestions.add(`${query} ${y}`);
+            suggestions.add(`${y} ${query}`);
+            sourceModifiers.forEach(sm => {
+              suggestions.add(`${query} ${sm} ${y}`);
+              if (isGameTitle) {
+                suggestions.add(`${query} - ${sm} ${y}`);
+              }
+            });
+          });
+          
+          // Add source-specific variations
+          sourceModifiers.forEach(sm => {
+            suggestions.add(`${query} ${sm}`);
+            suggestions.add(`${sm} ${query}`);
+            if (isGameTitle) {
+              suggestions.add(`${query} - ${sm}`);
+              suggestions.add(`${sm} - ${query}`);
+            }
+          });
+          
+          // Add game-specific variations if it's a game
+          if (isGameTitle) {
+            modifiers.gameSpecific.forEach(gs => {
+              suggestions.add(`${query} ${gs}`);
+              suggestions.add(`${gs} ${query}`);
+              suggestions.add(`${query} - ${gs}`);
+              
+              // Add with years
+              modifiers.year.forEach(y => {
+                suggestions.add(`${query} ${gs} ${y}`);
+                suggestions.add(`${query} ${y} ${gs}`);
+              });
+            });
+          }
+          
+          // Add country-specific variations if not global
+          if (countryCode !== 'GLOBAL') {
+            suggestions.add(`${query} in ${countryCode}`);
+            suggestions.add(`${query} ${countryCode}`);
+            if (isGameTitle) {
+              suggestions.add(`${query} - ${countryCode} version`);
+            }
+          }
+          
+          // Convert to array, filter out any empty strings, and limit to 20 results
+          let results = Array.from(suggestions)
+            .filter(s => s.trim() !== '' && s.toLowerCase() !== query.toLowerCase())
+            .slice(0, 30); // Increased to 30 to have more variety after filtering
+          
+          console.log('Generated suggestions:', results);
+          return results;
+        } catch (error) {
+          console.error('Error fetching suggestions:', error);
+          return getFallbackSuggestions(query, countryCode, sourceType);
+        }
+      }
+      
+      function getFallbackSuggestions(query, countryCode, sourceType) {
+        // Check if the query is a game title
+        const isGameTitle = /mortal kombat|call of duty|grand theft auto|assassin's? creed|fifa|nba|nfl|madden|nhl|pes|pro evolution soccer|street fighter|tekken|super mario|zelda|pokemon|final fantasy|god of war|halo|gears of war|uncharted|the last of us|resident evil|silent hill|metal gear|devil may cry|bayonetta|mega man|sonic|crash bandicoot|spyro|ratchet & clank|jak and daxter|sly cooper|infamous|horizon|ghost of tsushima|bloodborne|sekiro|dark souls|elden ring|demon's? souls|dark souls|dragon age|mass effect|the witcher|cyberpunk|red dead redemption|battlefield|call of duty|overwatch|valorant|league of legends|dota 2|counter.?strike|cs:?go|fortnite|apex legends|pubg|playerunknown's? battlegrounds|minecraft|stardew valley|terraria|among us|fall guys|rocket league|fifa|nba 2k|nhl|madden|nfl|mlb the show|wwe 2k|ufc|ea sports|ubisoft|activision|blizzard|bethesda|rockstar|take.?two|2k games|warner bros|warner bros\.? games|warner bros\.? interactive|warner bros\.? interactive entertainment|warner bros\.? interactive entertainment inc\.?/i.test(query);
+        
         const sourceSpecific = {
-          'youtube': ['tutorial', 'review', 'how to', 'unboxing', 'vs', 'comparison', '2025', '4k'],
-          'amazon': ['buy', 'price', 'deals', 'discount', 'review', 'best', 'cheap', 'on sale'],
-          'bing': ['news', 'images', 'videos', 'maps', 'trending', 'latest'],
-          'appstore': ['app', 'ios', 'download', 'free', 'premium', 'review', 'best', '2025'],
-          'playstore': ['app', 'android', 'download', 'free', 'premium', 'review', 'best', '2025'],
-          'instagram': ['post', 'reel', 'story', 'trending', 'viral', 'explore', 'hashtag'],
-          'twitter': ['tweet', 'thread', 'viral', 'trending', 'news', 'update', '2025'],
-          'pinterest': ['ideas', 'diy', 'tutorial', 'design', 'inspiration', '2025'],
-          'etsy': ['handmade', 'vintage', 'custom', 'personalized', 'gift', 'unique'],
-          'tiktok': ['video', 'trend', 'viral', 'challenge', 'dance', '2025'],
-          'trends': ['trending', 'popular', 'rising', 'related', 'comparison', '2025'],
-          'google': ['how to', 'best', 'review', 'guide', 'tutorial', 'vs', 'price', 'buy', 'free', 'online']
+          'youtube': isGameTitle ? 
+            ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'boss fight', 'ending', 'characters'] :
+            ['tutorial', 'review', 'how to', 'unboxing', 'vs', 'comparison', '2025', '4k'],
+            
+          'amazon': isGameTitle ?
+            ['buy', 'price', 'sale', 'discount', 'ps5', 'xbox', 'nintendo switch', 'pc', 'steam', 'game', 'collector\'s edition'] :
+            ['buy', 'price', 'deals', 'discount', 'review', 'best', 'cheap', 'on sale'],
+            
+          'bing': isGameTitle ?
+            ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats', 'ending', 'boss fight'] :
+            ['news', 'images', 'videos', 'maps', 'trending', 'latest'],
+            
+          'appstore': isGameTitle ?
+            ['game', 'ios', 'iphone', 'ipad', 'download', 'mobile', 'pre-order'] :
+            ['app', 'ios', 'download', 'free', 'premium', 'review', 'best', '2025'],
+            
+          'playstore': isGameTitle ?
+            ['game', 'android', 'download', 'mobile', 'pre-order', 'apk'] :
+            ['app', 'android', 'download', 'free', 'premium', 'review', 'best', '2025'],
+            
+          'instagram': isGameTitle ?
+            ['gameplay', 'screenshot', 'fanart', 'cosplay', 'collector', 'edition'] :
+            ['post', 'reel', 'story', 'trending', 'viral', 'explore', 'hashtag'],
+            
+          'twitter': isGameTitle ?
+            ['gameplay', 'review', 'news', 'update', 'announcement', 'trailer'] :
+            ['tweet', 'thread', 'viral', 'trending', 'news', 'update', '2025'],
+            
+          'pinterest': isGameTitle ?
+            ['art', 'fanart', 'wallpaper', 'poster', 'collector', 'edition'] :
+            ['ideas', 'diy', 'tutorial', 'design', 'inspiration', '2025'],
+            
+          'etsy': isGameTitle ?
+            ['poster', 'art', 'print', 'sticker', 'keychain', 'merchandise'] :
+            ['handmade', 'vintage', 'custom', 'personalized', 'gift', 'unique'],
+            
+          'tiktok': isGameTitle ?
+            ['gameplay', 'clip', 'montage', 'funny', 'glitch', 'easter egg'] :
+            ['video', 'trend', 'viral', 'challenge', 'dance', '2025'],
+            
+          'trends': isGameTitle ?
+            ['popularity', 'search volume', 'comparison', 'vs', 'stats', 'chart'] :
+            ['trending', 'popular', 'rising', 'related', 'comparison', '2025'],
+            
+          'google': isGameTitle ?
+            ['gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats', 'ending', 'boss fight'] :
+            ['how to', 'best', 'review', 'guide', 'tutorial', 'vs', 'price', 'buy', 'free', 'online']
         };
         
-        const prefixes = ['best', 'top', 'how to', 'why', 'what is', 'where to', 'when', 'can you', 'should i', 'does'];
+        const prefixes = isGameTitle ? 
+          ['how to', 'best', 'where to', 'tips for', 'cheats for', 'walkthrough for', 'review of', 'gameplay of'] :
+          ['best', 'top', 'how to', 'why', 'what is', 'where to', 'when', 'can you', 'should i', 'does'];
+          
         const suffixes = sourceSpecific[sourceType] || sourceSpecific['google'];
         
-        // Generate suggestions with country context
-        const suggestions = [
-          ...prefixes.map(p => `${p} ${query}`),
-          ...suffixes.map(s => `${query} ${s}`),
-          query,
-          `${query} ${countryCode}`,
-          `${query} in ${countryCode}`,
-          `${query} ${new Date().getFullYear()}`,
-          ...(sourceType === 'google' ? [] : [`${query} ${sourceType}`])
-        ];
+        // Generate base suggestions
+        let suggestions = [];
         
-        // Add source-specific variations
-        if (sourceType === 'appstore' || sourceType === 'playstore') {
-          suggestions.push(`${query} app`, `best ${query} app`, `${query} mobile app`);
-        } else if (sourceType === 'youtube' || sourceType === 'tiktok') {
-          suggestions.push(`${query} video`, `watch ${query}`, `${query} full video`);
-        } else if (sourceType === 'instagram' || sourceType === 'pinterest') {
-          suggestions.push(`#${query.replace(/\s+/g, '')}`, `${query} ideas`, `${query} inspiration`);
-        } else if (sourceType === 'etsy') {
-          suggestions.push(`handmade ${query}`, `vintage ${query}`, `custom ${query}`);
+        // Add prefixes
+        prefixes.forEach(prefix => {
+          suggestions.push(`${prefix} ${query}`.trim());
+          if (isGameTitle) {
+            suggestions.push(`${query} - ${prefix.replace(' for', '')}`.trim());
+          }
+        });
+        
+        // Add suffixes
+        suffixes.forEach(suffix => {
+          suggestions.push(`${query} ${suffix}`.trim());
+          if (isGameTitle) {
+            suggestions.push(`${query} - ${suffix}`.trim());
+          }
+        });
+        
+        // Add the original query
+        suggestions.push(query);
+        
+        // Add country and year variations
+        if (countryCode !== 'GLOBAL') {
+          suggestions.push(`${query} in ${countryCode}`.trim());
+          suggestions.push(`${query} ${countryCode}`.trim());
         }
         
-        // Remove duplicates and return
-        return [...new Set(suggestions)];
+        const currentYear = new Date().getFullYear();
+        suggestions.push(`${query} ${currentYear}`.trim());
+        suggestions.push(`${query} ${currentYear + 1}`.trim());
+        
+        // Add source-specific variations if not already included
+        if (sourceType !== 'google') {
+          suggestions.push(`${query} ${sourceType}`.trim());
+          if (isGameTitle) {
+            suggestions.push(`${query} - ${sourceType} gameplay`.trim());
+          }
+        }
+        
+        // Add game-specific variations if it's a game
+        if (isGameTitle) {
+          const gameModifiers = [
+            'gameplay', 'walkthrough', 'review', 'tips', 'tricks', 'cheats', 
+            'ending', 'boss fight', 'characters', 'unlockables', 'secrets', 
+            'easter eggs', 'download', 'pc', 'ps5', 'xbox', 'nintendo switch', 
+            'steam', 'epic games', 'game pass', 'ps plus', 'xbox game pass',
+            'gameplay 4k', 'no commentary', 'full game', 'all cutscenes',
+            'all endings', 'all bosses', 'speedrun', '100% completion'
+          ];
+          
+          gameModifiers.forEach(mod => {
+            suggestions.push(`${query} ${mod}`.trim());
+            suggestions.push(`${query} - ${mod}`.trim());
+            
+            // Add with years
+            suggestions.push(`${query} ${mod} ${currentYear}`.trim());
+            suggestions.push(`${query} - ${mod} ${currentYear}`.trim());
+          });
+        }
+        
+        // Remove duplicates and limit to 30 results
+        return [...new Set(suggestions)].slice(0, 30);
       }
 
       async function fetchMetricsGeneric(keywords, regionCode, language, sourceType) {
@@ -445,90 +684,305 @@
         renderTableWithMetrics(map);
       }
 
-      if(btn){
-        // Enter key to search
-        kw.addEventListener('keydown', (e)=>{
-          if(e.key === 'Enter'){
-            e.preventDefault();
-            btn.click();
+      async function performSearch() {
+        // Get input values with fallbacks
+        const searchTerm = (kw && kw.value) ? kw.value.trim() : '';
+        const country = (region && region.value) ? region.value : 'GLOBAL';
+        const sourceType = (source && source.value) ? source.value : 'google';
+        
+        console.log('Starting search with:', {searchTerm, country, sourceType});
+        
+        // Validate input
+        if(!searchTerm) {
+          showError('Please enter a keyword to search.');
+          return;
+        }
+        
+        // Show loading state
+        toggleLoadingState(true);
+        
+        try {
+          // Clear previous results
+          if (tbody) tbody.innerHTML = '';
+          
+          // Set active tab
+          setActiveTab('find');
+          
+          // Get suggestions
+          console.log('Fetching suggestions for:', searchTerm);
+          let keywordSuggestions = await getKeywordSuggestions(searchTerm, country, sourceType);
+          console.log('Received suggestions:', keywordSuggestions);
+          
+          // If no results, show fallback suggestions
+          if (!keywordSuggestions || keywordSuggestions.length === 0) {
+            console.log('No suggestions found, showing fallback');
+            keywordSuggestions = generateFallbackSuggestions(searchTerm, country, sourceType);
           }
-        });
-        btn.addEventListener('click', async ()=>{
-          const k = (kw.value||'').trim();
-          const c = region.value;
-          if(!k){
-            results.innerHTML = '<p>Please enter a keyword.</p>';
-            return;
+          
+          // Display the results
+          if (keywordSuggestions && keywordSuggestions.length > 0) {
+            console.log('Displaying', keywordSuggestions.length, 'suggestions');
+            displayResults(keywordSuggestions);
+          } else {
+            showMessage('No suggestions found. Please try a different keyword.');
           }
-          results.style.display = 'block';
-          results.innerHTML = '<p>Loading suggestions…</p>';
-          try{
-            let ideas = null;
-            // Try SerpAPI first if configured
-            ideas = await fetchSuggestionsSerpApi(k, c, source.value);
-            // Then try custom API if SerpAPI not configured or returned empty
-            if(!ideas || ideas.length === 0){
-              ideas = await fetchSuggestionsCustom(k, c, source.value);
-            }
-            // Fallback if still empty
-            if(!ideas || ideas.length === 0){
-              ideas = [
-                `${k} near me`,
-                `${k} review`,
-                `${k} price in ${c}`,
-                `best ${k} in ${c}`
-              ];
-            }
-            await renderTableWithMetrics(ideas);
-            results.style.display = 'none';
-          }catch(e){
-            const ideas = [
-              `${k} near me`,
-              `${k} review`,
-              `${k} price in ${c}`,
-              `best ${k} in ${c}`
-            ];
-            await renderTableWithMetrics(ideas);
-            results.style.display = 'none';
-          }
-        });
-      }
-
-      // Tabs
-      function setTab(which){
-        if(which==='find'){
-          tabFind.classList.add('active');
-          tabFind.setAttribute('aria-selected','true');
-          tabVolume.classList.remove('active');
-          tabVolume.setAttribute('aria-selected','false');
-          volSection.style.display = 'none';
-        } else {
-          tabVolume.classList.add('active');
-          tabVolume.setAttribute('aria-selected','true');
-          tabFind.classList.remove('active');
-          tabFind.setAttribute('aria-selected','false');
-          volSection.style.display = 'block';
+          
+        } catch (error) {
+          console.error('Search error:', error);
+          showError(`Error: ${error.message || 'Failed to fetch suggestions. Please try again.'}`);
+        } finally {
+          // Reset loading state
+          toggleLoadingState(false);
         }
       }
-      tabFind?.addEventListener('click',()=>setTab('find'));
-      tabVolume?.addEventListener('click',()=>setTab('volume'));
+      
+      function toggleLoadingState(isLoading) {
+        if (!btn) return;
+        
+        btn.disabled = isLoading;
+        btn.innerHTML = isLoading ? 'Searching...' : '🔍';
+        
+        if (isLoading) {
+          showMessage('Searching for keyword suggestions...', true);
+        }
+      }
+      
+      function setActiveTab(tabName) {
+        if (!tabFind || !tabVolume) return;
+        
+        if (tabName === 'find') {
+          tabFind.classList.add('active');
+          tabFind.setAttribute('aria-selected', 'true');
+          tabVolume.classList.remove('active');
+          tabVolume.setAttribute('aria-selected', 'false');
+          if (volSection) volSection.style.display = 'none';
+        } else {
+          tabVolume.classList.add('active');
+          tabVolume.setAttribute('aria-selected', 'true');
+          tabFind.classList.remove('active');
+          tabFind.setAttribute('aria-selected', 'false');
+          if (volSection) volSection.style.display = 'block';
+        }
+      }
+      
+      async function getKeywordSuggestions(term, country, sourceType) {
+        console.log('Getting suggestions for:', {term, country, sourceType});
+        
+        try {
+          // First try the custom suggestions
+          console.log('Trying custom suggestions...');
+          const suggestions = await fetchSuggestionsCustom(term, country, sourceType);
+          console.log('Custom suggestions:', suggestions);
+          
+          // If we have valid suggestions, return them
+          if (suggestions && Array.isArray(suggestions) && suggestions.length > 0) {
+            console.log('Returning custom suggestions');
+            return suggestions;
+          }
+          
+          console.log('No custom suggestions, trying fallback...');
+          // If no results, try fallback
+          const fallback = generateFallbackSuggestions(term, country, sourceType);
+          console.log('Fallback suggestions:', fallback);
+          return fallback;
+          
+        } catch (error) {
+          console.error('Error getting suggestions:', error);
+          return generateFallbackSuggestions(term, country, sourceType);
+        }
+      }
+      
+      function generateFallbackSuggestions(term, country, sourceType) {
+        console.log('Generating fallback suggestions for:', term);
+        const suggestions = [];
+        
+        // Basic variations
+        const prefixes = ['best', 'how to', 'why', 'where to buy', 'review of', 'tips for'];
+        const suffixes = ['2025', 'near me', 'online', 'free', 'download', 'tutorial', 'guide'];
+        
+        // Add basic variations
+        prefixes.forEach(prefix => {
+          suggestions.push(`${prefix} ${term}`.trim());
+        });
+        
+        suffixes.forEach(suffix => {
+          suggestions.push(`${term} ${suffix}`.trim());
+        });
+        
+        // Add source-specific variations
+        if (sourceType === 'youtube') {
+          ['tutorial', 'review', 'gameplay', 'walkthrough', 'tips'].forEach(suffix => {
+            suggestions.push(`${term} ${suffix}`.trim());
+          });
+        } else if (sourceType === 'amazon') {
+          ['buy', 'price', 'sale', 'discount', 'review'].forEach(suffix => {
+            suggestions.push(`${term} ${suffix}`.trim());
+          });
+        }
+        
+        // Add country-specific if not global
+        if (country !== 'GLOBAL') {
+          suggestions.push(`${term} in ${country}`.trim());
+          suggestions.push(`${term} ${country}`.trim());
+        }
+        
+        // Remove duplicates and limit to 20
+        return [...new Set(suggestions)].slice(0, 20);
+      }
+      
+      function displayResults(keywords) {
+        if (!tbody) return;
+        
+        // Clear existing results
+        tbody.innerHTML = '';
+        
+        // Add each keyword to the table
+        keywords.forEach((keyword, index) => {
+          if (index >= 20) return; // Limit to 20 results
+          
+          const row = document.createElement('tr');
+          
+          // Add keyword cell
+          const keywordCell = document.createElement('td');
+          keywordCell.textContent = keyword;
+          row.appendChild(keywordCell);
+          
+          // Add dummy metrics (you can replace these with real data)
+          ['-', '-', '-', '-', '-'].forEach(metric => {
+            const cell = document.createElement('td');
+            cell.textContent = metric;
+            row.appendChild(cell);
+          });
+          
+          tbody.appendChild(row);
+        });
+        
+        // Hide the loading message
+        if (results) {
+          results.style.display = 'none';
+        }
+      }
+      
+      function showMessage(message, isLoading = false) {
+        if (!results) {
+          console.log('Message (results element not found):', message);
+          return;
+        }
+        
+        const loadingSpinner = isLoading ? ' <span class="loading-spinner"></span>' : '';
+        results.style.display = 'block';
+        results.innerHTML = `<p style="padding: 10px; margin: 0;">${message}${loadingSpinner}</p>`;
+        
+        // Log to console for debugging
+        console.log('UI Message:', message);
+      }
+      
+      function showError(message) {
+        if (!results) {
+          console.error('Error (results element not found):', message);
+          return;
+        }
+        
+        results.style.display = 'block';
+        results.innerHTML = `
+          <div style="
+            color: #dc2626; 
+            background: #fef2f2; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin: 10px 0;
+            border-left: 4px solid #dc2626;
+          ">
+            <p style="margin: 0; font-weight: 500;">${message}</p>
+          </div>
+        `;
+        
+        // Log to console for debugging
+        console.error('UI Error:', message);
+      }
+      
+      // Set up event listeners if elements exist
+      if(btn && kw) {
+        console.log('Setting up event listeners...');
+        
+        // Button click to search
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          performSearch();
+        });
+        
+        // Enter key to search
+        kw.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+          }
+        });
+        
+        // Button click to search
+        btn.addEventListener('click', performSearch);
+      }
+      
+      // Tab switching
+      function setTab(tab) {
+        if (tab === 'find') {
+          tabFind.classList.add('active');
+          tabFind.setAttribute('aria-selected', 'true');
+          tabVolume.classList.remove('active');
+          tabVolume.setAttribute('aria-selected', 'false');
+          volSection.style.display = 'none';
+          document.getElementById('kw').focus();
+        } else {
+          tabVolume.classList.add('active');
+          tabVolume.setAttribute('aria-selected', 'true');
+          tabFind.classList.remove('active');
+          tabFind.setAttribute('aria-selected', 'false');
+          volSection.style.display = 'block';
+          document.getElementById('kwList').focus();
+        }
+      }
+      
+      tabFind?.addEventListener('click', () => setTab('find'));
+      tabVolume?.addEventListener('click', () => setTab('volume'));
 
       // Volume checker handler
-      btnVolume?.addEventListener('click', async ()=>{
-        const raw = (kwList.value||'').trim();
-        if(!raw){ results.style.display='block'; results.innerHTML='<p>Enter keywords above.</p>'; return; }
+      btnVolume?.addEventListener('click', async () => {
+        const raw = (kwList.value || '').trim();
+        if (!raw) { 
+          results.style.display = 'block'; 
+          results.innerHTML = '<p>Please enter keywords to check.</p>'; 
+          return; 
+        }
+        
         const list = raw
-          .split(/\n|,/) // newline or comma
-          .map(s=>s.trim())
+          .split(/\n|,/) // Split by newline or comma
+          .map(s => s.trim())
           .filter(Boolean);
-        results.style.display='block';
-        results.innerHTML='<p>Fetching metrics…</p>';
-        try{
+          
+        if (list.length === 0) {
+          results.style.display = 'block';
+          results.innerHTML = '<p>Please enter valid keywords to check.</p>';
+          return;
+        }
+        
+        // Show loading state
+        btnVolume.disabled = true;
+        results.style.display = 'block';
+        results.innerHTML = '<p>Checking search volumes... <span class="loading-spinner"></span></p>';
+        
+        try {
           await renderTableWithMetrics(list);
-          results.style.display='none';
-        }catch(e){
-          renderTable(list);
-          results.style.display='none';
+          results.style.display = 'none';
+        } catch (e) {
+          console.error('Volume check error:', e);
+          results.innerHTML = `
+            <div style="color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px; margin: 10px 0;">
+              <p>Error checking search volumes. Please try again.</p>
+              <p style="font-size: 0.9em; margin-top: 8px; color: #7f1d1d;">${e.message || 'Unknown error occurred'}</p>
+            </div>
+          `;
+        } finally {
+          btnVolume.disabled = false;
         }
       });
     })();
