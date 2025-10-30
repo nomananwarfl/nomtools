@@ -766,15 +766,25 @@
       }
       
       async function getKeywordSuggestions(term, country, sourceType) {
+        console.log('Getting suggestions for:', {term, country, sourceType});
+        
         try {
           // First try the custom suggestions
+          console.log('Trying custom suggestions...');
           const suggestions = await fetchSuggestionsCustom(term, country, sourceType);
-          if (suggestions && suggestions.length > 0) {
+          console.log('Custom suggestions:', suggestions);
+          
+          // If we have valid suggestions, return them
+          if (suggestions && Array.isArray(suggestions) && suggestions.length > 0) {
+            console.log('Returning custom suggestions');
             return suggestions;
           }
           
+          console.log('No custom suggestions, trying fallback...');
           // If no results, try fallback
-          return generateFallbackSuggestions(term, country, sourceType);
+          const fallback = generateFallbackSuggestions(term, country, sourceType);
+          console.log('Fallback suggestions:', fallback);
+          return fallback;
           
         } catch (error) {
           console.error('Error getting suggestions:', error);
@@ -851,7 +861,6 @@
         if (results) {
           results.style.display = 'none';
         }
-      }
       }
       
       function showMessage(message, isLoading = false) {
