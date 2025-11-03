@@ -46,7 +46,7 @@
 
     // SEO category
     { id:'seo-meta-tool', name:'SEO Meta Tool', description:'Generate and preview SEO meta tags.', category:'seo', href:'tools/seo-meta-tool' },
-    { id:'keyword-research', name:'Keyword Research (Country-wise)', description:'Explore keyword ideas by country.', category:'seo', href:'tools/keyword-research' },
+    { id:'keyword-research', name:'Keyword Research (Country-wise)', description:'Explore keyword ideas by country.', category:'seo', href:'https://keyword-sparkle-tool.vercel.app/keyword-sparkle-tool' },
     { id:'backlink-checker', name:'Backlink Checker', description:'Check backlinks for a domain (placeholder).', category:'seo', href:'tools/backlink-checker' },
     { id:'serp-preview', name:'SERP Preview', description:'Preview how your page may appear in search results.', category:'seo', href:'tools/serp-preview' },
     { id:'sitemap-generator', name:'Sitemap Generator', description:'Generate an XML sitemap from URLs.', category:'seo', href:'tools/sitemap-generator' },
