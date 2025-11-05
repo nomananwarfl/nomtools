@@ -44,13 +44,8 @@
     { id:'hash-generator', name:'Hash Generator', description:'MD5, SHA1, SHA256 (client-side).', category:'developer', href:'tools/hash-generator' },
     { id:'base64-tool', name:'Base64 Encoder/Decoder', description:'Encode/Decode Base64.', category:'developer', href:'tools/base64-tool' },
 
-    // SEO category
-    { id:'seo-meta-tool', name:'SEO Meta Tool', description:'Generate and preview SEO meta tags.', category:'seo', href:'tools/seo-meta-tool' },
-    { id:'keyword-research', name:'Keyword Research (Country-wise)', description:'Explore keyword ideas by country.', category:'seo', href:"https://keyword-sparkle-tool.vercel.app/" },
-    { id:'backlink-checker', name:'Backlink Checker', description:'Check backlinks for a domain (placeholder).', category:'seo', href:'tools/backlink-checker' },
-    { id:'serp-preview', name:'SERP Preview', description:'Preview how your page may appear in search results.', category:'seo', href:'tools/serp-preview' },
-    { id:'sitemap-generator', name:'Sitemap Generator', description:'Generate an XML sitemap from URLs.', category:'seo', href:'tools/sitemap-generator' },
-    { id:'robots-tester', name:'Robots.txt Generator & Tester', description:'Create and test robots.txt rules.', category:'seo', href:'tools/robots-tester' },
+    // SEO tools moved to seo-essential-tools.html
+    { id:'seo-essential-tools', name:'SEO Essential Tools', description:'Collection of essential SEO tools including meta tag generator, keyword research, and more.', category:'seo', href:'seo-essential-tools.html' },
 
     { id:'percentage-calculator', name:'Percentage Calculator', description:'Compute percentages easily.', category:'utility', href:'tools/percentage-calculator' },
     { id:'age-calculator', name:'Age Calculator', description:'Calculate age from birthdate.', category:'utility', href:'tools/age-calculator' },
