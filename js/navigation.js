@@ -1,43 +1,51 @@
 // Mobile navigation toggle
-const navToggle = document.querySelector('.master-nav-toggle');
-const navMenu = document.querySelector('.master-nav-menu');
-const navOverlay = document.querySelector('.master-nav-overlay');
-const body = document.body;
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.querySelector('.master-nav-toggle');
+    const navMenu = document.querySelector('.master-nav-menu');
+    const navOverlay = document.querySelector('.master-nav-overlay');
+    const body = document.body;
+    const submenuToggles = document.querySelectorAll('.submenu-toggle');
 
-// Toggle mobile menu
-function toggleMenu() {
-    const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
-    navToggle.setAttribute('aria-expanded', !isExpanded);
-    navMenu.classList.toggle('open');
-    navOverlay.classList.toggle('open');
-    body.classList.toggle('nav-open', !isExpanded);
-    
-    // Toggle aria-hidden on menu items for better screen reader support
-    const menuItems = navMenu.querySelectorAll('a');
-    menuItems.forEach(item => {
-        item.setAttribute('tabindex', isExpanded ? '-1' : '0');
-    });
-}
-
-// Close menu when clicking outside
-function closeMenu(e) {
-    if (!navMenu.contains(e.target) && e.target !== navToggle) {
-        navToggle.setAttribute('aria-expanded', 'false');
-        navMenu.classList.remove('open');
-        navOverlay.classList.remove('open');
-        body.classList.remove('nav-open');
+    // Toggle mobile menu
+    function toggleMenu() {
+        const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', !isExpanded);
+        navMenu.classList.toggle('open');
+        navOverlay.classList.toggle('active');
+        body.classList.toggle('nav-open', !isExpanded);
         
-        // Reset tabindex for menu items
+        // Toggle aria-hidden on menu items for better screen reader support
         const menuItems = navMenu.querySelectorAll('a');
         menuItems.forEach(item => {
-            item.setAttribute('tabindex', '-1');
+            item.setAttribute('tabindex', isExpanded ? '-1' : '0');
         });
     }
-}
 
-// Initialize navigation
-document.addEventListener('DOMContentLoaded', () => {
-    // Add event listeners
+    // Toggle submenu
+    function toggleSubmenu(button) {
+        const submenu = button.nextElementSibling;
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', !isExpanded);
+        submenu.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    function closeMenu(e) {
+        if (navMenu && !navMenu.contains(e.target) && e.target !== navToggle) {
+            navToggle.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('open');
+            navOverlay.classList.remove('active');
+            body.classList.remove('nav-open');
+            
+            // Reset tabindex for menu items
+            const menuItems = navMenu.querySelectorAll('a');
+            menuItems.forEach(item => {
+                item.setAttribute('tabindex', '-1');
+            });
+        }
+    }
+
+    // Initialize navigation
     if (navToggle) {
         navToggle.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -49,6 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navOverlay) {
         navOverlay.addEventListener('click', closeMenu);
     }
+
+    // Handle submenu toggles
+    submenuToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSubmenu(toggle);
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
+            toggleMenu();
+        }
+    });
     
     // Close menu when clicking on a link
     const navLinks = document.querySelectorAll('.master-nav-menu a');
