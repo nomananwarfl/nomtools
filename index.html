@@ -84,13 +84,18 @@
                             <img src="/images/logo.png" alt="NomTool Logo" class="logo-img">
                             <span class="logo-text">NomTool</span>
                         </a>
-                        <button class="master-nav-toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle navigation">
-                            <span class="hamburger"></span>
+                        <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle navigation">
+                            <span class="hamburger">
+                                <span class="bar"></span>
+                                <span class="bar"></span>
+                                <span class="bar"></span>
+                            </span>
+                            <span class="sr-only">Menu</span>
                         </button>
                     </div>
 
-                    <div class="master-nav-overlay"></div>
-                    <div class="master-nav-menu" id="main-menu">
+                    <div class="mobile-menu-overlay"></div>
+                    <div class="nav-menu-container" id="main-menu">
                         <ul class="main-menu">
                             <li class="menu-item">
                                 <a href="/" class="menu-link active" aria-current="page">Home</a>
@@ -98,17 +103,17 @@
                             <li class="menu-item">
                                 <a href="/about.html" class="menu-link">About</a>
                             </li>
-                            <li class="menu-item has-submenu">
+                            <li class="menu-item menu-item-has-children">
                                 <a href="#" class="menu-link" aria-haspopup="true" aria-expanded="false">Tools</a>
                                 <button class="submenu-toggle" aria-expanded="false" aria-label="Toggle submenu">
                                     <span class="plus">+</span>
                                 </button>
                                 <ul class="submenu">
-                                    <li><a href="#text-tools">Text Tools</a></li>
-                                    <li><a href="#image-tools">Image Tools</a></li>
-                                    <li><a href="#dev-tools">Developer Tools</a></li>
-                                    <li><a href="#utilities">Utilities</a></li>
-                                    <li><a href="seo-essential-tools.html">SEO Tools</a></li>
+                                    <li><a href="#text-tools" class="submenu-link">Text Tools</a></li>
+                                    <li><a href="#image-tools" class="submenu-link">Image Tools</a></li>
+                                    <li><a href="#dev-tools" class="submenu-link">Developer Tools</a></li>
+                                    <li><a href="#utilities" class="submenu-link">Utilities</a></li>
+                                    <li><a href="seo-essential-tools.html" class="submenu-link">SEO Tools</a></li>
                                 </ul>
                             </li>
                             <li class="menu-item">
@@ -294,7 +299,10 @@
             </div>
         </div>
     </div>
+    
+    <!-- Scripts -->
     <script src="js/cookie-consent.js"></script>
+    <script src="js/mobile-navigation.js"></script>
     <script src="js/mobile-nav.js" defer></script>
 </body>
 </html>
