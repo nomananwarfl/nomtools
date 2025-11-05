@@ -416,6 +416,105 @@ body{
 }
 
 /* Mobile Menu Styles */
+/* Desktop Navigation */
+.main-nav {
+    background-color: #1a1a1a;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.main-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    position: relative;
+    margin: 0 10px;
+}
+
+.menu-link {
+    color: #e0e0e0;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.menu-link:hover,
+.menu-link:focus {
+    color: #ffffff;
+}
+
+/* Submenu Styling */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #2d2d2d;
+    min-width: 200px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.menu-item:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.submenu-link {
+    color: #e0e0e0;
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.submenu-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* Mobile Navigation */
 @media (max-width: 1024px) {
     .mobile-menu-toggle {
         display: flex;
@@ -528,6 +627,49 @@ body{
     
     .nav-container {
         padding: 0 1.25rem;
+        justify-content: space-between;
+    }
+    
+    .main-menu {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100vh;
+        background-color: #1a1a1a;
+        flex-direction: column;
+        padding: 80px 20px 20px;
+        transition: right 0.3s ease;
+        z-index: 1001;
+    }
+    
+    .main-menu.active {
+        right: 0;
+    }
+    
+    .menu-item {
+        margin: 5px 0;
+    }
+    
+    .menu-link {
+        padding: 12px 0;
+    }
+    
+    .submenu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background-color: transparent;
+        padding-left: 15px;
+    }
+    
+    .submenu.active {
+        max-height: 1000px;
     }
 }
 
