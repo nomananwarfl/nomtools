@@ -373,7 +373,11 @@ body{
 
 /* Hero */
 .hero{max-width:900px;margin:40px auto;padding:0 16px;text-align:center}
-.hero h1{font-size:2rem;margin:0 0 8px}
+.hero h1{
+  font-family: 'Inter', Arial, sans-serif;
+  font-display: swap;
+  animation: fadeIn 0.4s ease-in;
+}
 .hero p{margin:0 0 18px;color:#4b5563}
 .search-bar{display:flex;gap:8px;justify-content:center}
 .search-bar input{width:100%;max-width:480px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text)}
