@@ -1,13 +1,11 @@
 User-agent: *
-Allow: /
-
-Diallow: /privacy-policy.html
-Diallow: /terms-and-conditions.html
-Diallow: /contact.html
-Diallow: /advance-tools.html
-Diallow: /tools/backlink-checker.html
-Diallow: /tools/serp-preview.html
-Diallow: /tools/sitemap-generator.html
-Diallow: /tools/robots-tester.html
+Disallow: /privacy-policy.html
+Disallow: /terms-and-conditions.html
+Disallow: /contact.html
+Disallow: /advance-tools.html
+Disallow: /tools/backlink-checker.html
+Disallow: /tools/serp-preview.html
+Disallow: /tools/sitemap-generator.html
+Disallow: /tools/robots-tester.html
 
 Sitemap: https://nomtool.space/sitemap.xml
