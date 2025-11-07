@@ -29,15 +29,10 @@
     <meta name="twitter:image" content="https://nomtool.space/assets/images/og-image.svg" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="icon" href="assets/icons/favicon.ico" />
-    
-    <!-- Preload Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Load combined and minified CSS -->
-    <link rel="preload" href="css/main.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/main.min.css"></noscript>
+    <link rel="stylesheet" href="css/nomtool-styles.css">
     <link rel="preload" href="js/navigation.js" as="script">
     <script type="application/ld+json">
     {
@@ -84,17 +79,11 @@
                             <img src="/images/logo.png" alt="NomTool Logo" class="logo-img">
                             <span class="logo-text">NomTool</span>
                         </a>
-                        <button class="mobile-menu-toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle navigation">
-                            <span class="hamburger">
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                            </span>
-                            <span class="sr-only">Menu</span>
+                        <button class="nav-toggle" aria-expanded="false" aria-controls="main-menu" aria-label="Toggle navigation">
+                            <span class="hamburger"></span>
                         </button>
                     </div>
 
-                    <div class="mobile-menu-overlay"></div>
                     <div class="nav-menu-container" id="main-menu">
                         <ul class="main-menu">
                             <li class="menu-item">
@@ -103,22 +92,17 @@
                             <li class="menu-item">
                                 <a href="/about.html" class="menu-link">About</a>
                             </li>
-                            <li class="menu-item">
-                                <a href="/tools.html" class="menu-link">All Tools</a>
-                            </li>
-                            <li class="menu-item menu-item-has-children">
-                                <a href="#" class="menu-link" aria-haspopup="true" aria-expanded="false">Categories</a>
+                            <li class="menu-item has-submenu">
+                                <a href="#" class="menu-link" aria-haspopup="true" aria-expanded="false">Tools</a>
                                 <button class="submenu-toggle" aria-expanded="false" aria-label="Toggle submenu">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
+                                    <span class="plus">+</span>
                                 </button>
                                 <ul class="submenu">
-                                    <li><a href="#text-tools" class="submenu-link">Text Tools</a></li>
-                                    <li><a href="#image-tools" class="submenu-link">Image Tools</a></li>
-                                    <li><a href="#dev-tools" class="submenu-link">Developer Tools</a></li>
-                                    <li><a href="#utilities" class="submenu-link">Utilities</a></li>
-                                    <li><a href="seo-essential-tools.html" class="submenu-link">SEO Tools</a></li>
+                                    <li><a href="#text-tools">Text Tools</a></li>
+                                    <li><a href="#image-tools">Image Tools</a></li>
+                                    <li><a href="#dev-tools">Developer Tools</a></li>
+                                    <li><a href="#utilities">Utilities</a></li>
+                                    <li><a href="#seo-tools">SEO Tools</a></li>
                                 </ul>
                             </li>
                             <li class="menu-item">
@@ -200,6 +184,11 @@
         <section class="tools-section" id="dev-tools" aria-labelledby="dev-tools-title">
             <h2 id="dev-tools-title">Developer Tools</h2>
             <div class="tools-grid" id="grid-developer"></div>
+        </section>
+
+        <section class="tools-section" id="seo-tools" aria-labelledby="seo-tools-title">
+            <h2 id="seo-tools-title">Essential SEO Tools</h2>
+            <div class="tools-grid" id="grid-seo"></div>
         </section>
 
         <section class="tools-section" id="utilities" aria-labelledby="utilities-title">
@@ -293,21 +282,6 @@
     </footer>
 
     <script src="js/main.js"></script>
-    
-    <!-- Cookie Consent Banner -->
-    <div id="cookie-consent-banner" class="cookie-consent-banner">
-        <div class="cookie-consent-content">
-            <p>We use cookies to enhance your experience on our website. By continuing to browse, you agree to our use of cookies.</p>
-            <div class="cookie-consent-buttons">
-                <button id="accept-cookies" class="btn btn-primary">Accept All</button>
-                <button id="decline-cookies" class="btn btn-outline">Decline</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Scripts -->
-    <script src="js/cookie-consent.js"></script>
-    <script src="js/mobile-navigation.js"></script>
     <script src="js/mobile-nav.js" defer></script>
 </body>
 </html>
