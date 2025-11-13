@@ -3,9 +3,5 @@ Disallow: /privacy-policy.html
 Disallow: /terms-and-conditions.html
 Disallow: /contact.html
 Disallow: /advance-tools.html
-Disallow: /tools/backlink-checker.html
-Disallow: /tools/serp-preview.html
-Disallow: /tools/sitemap-generator.html
-Disallow: /tools/robots-tester.html
 
 Sitemap: https://nomtool.space/sitemap.xml
