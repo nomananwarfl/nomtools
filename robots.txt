@@ -3,5 +3,7 @@ Disallow: /privacy-policy.html
 Disallow: /terms-and-conditions.html
 Disallow: /contact.html
 Disallow: /advance-tools.html
+Disallow: /zuhoo
+
 
 Sitemap: https://nomtool.space/sitemap.xml
