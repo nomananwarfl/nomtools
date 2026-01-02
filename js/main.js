@@ -19,30 +19,30 @@
 
   // Tools Registry (Phase 1 implements first 5 fully)
   const TOOLS = [
-    { id:'word-counter', name:'Word Counter', description:'Count words, characters, and paragraphs.', category:'text', href:'tools/word-counter/' },
-    { id:'password-generator', name:'Password Generator', description:'Create secure passwords with custom options.', category:'text', href:'tools/password-generator/' },
-    { id:'qr-generator', name:'QR Code Generator', description:'Generate a QR code from text or URL.', category:'image', href:'tools/qr-generator/' },
-    { id:'image-resizer', name:'Image Resizer', description:'Resize images client-side and download.', category:'image', href:'tools/image-resizer/' },
-    { id:'unit-converter', name:'Unit Converter', description:'Convert length, weight, and temperature.', category:'utility', href:'tools/unit-converter/' },
+    { id:'word-counter', name:'Word Counter', description:'Count words, characters, and paragraphs.', category:'text', href:'tools/word-counter' },
+    { id:'password-generator', name:'Password Generator', description:'Create secure passwords with custom options.', category:'text', href:'tools/password-generator' },
+    { id:'qr-generator', name:'QR Code Generator', description:'Generate a QR code from text or URL.', category:'image', href:'tools/qr-generator' },
+    { id:'image-resizer', name:'Image Resizer', description:'Resize images client-side and download.', category:'image', href:'tools/image-resizer' },
+    { id:'unit-converter', name:'Unit Converter', description:'Convert length, weight, and temperature.', category:'utility', href:'tools/unit-converter' },
 
     // Placeholders for upcoming tools (Phase 2)
-    { id:'text-case-converter', name:'Text Case Converter', description:'UPPER, lower, Title, CamelCase.', category:'text', href:'tools/text-case-converter/' },
-    { id:'lorem-ipsum', name:'Lorem Ipsum Generator', description:'Generate placeholder text.', category:'text', href:'tools/lorem-ipsum/' },
-    { id:'text-diff', name:'Text Difference Checker', description:'Compare two texts to see differences.', category:'text', href:'tools/text-diff/' },
-    { id:'url-shortener', name:'URL Shortener (Simulated)', description:'Simulate URL shortening.', category:'text', href:'tools/url-shortener/' },
-    { id:'md-to-html', name:'Markdown to HTML', description:'Convert Markdown to HTML.', category:'text', href:'tools/markdown-to-html/' },
+    { id:'text-case-converter', name:'Text Case Converter', description:'UPPER, lower, Title, CamelCase.', category:'text', href:'tools/text-case-converter' },
+    { id:'lorem-ipsum', name:'Lorem Ipsum Generator', description:'Generate placeholder text.', category:'text', href:'tools/lorem-ipsum' },
+    { id:'text-diff', name:'Text Difference Checker', description:'Compare two texts to see differences.', category:'text', href:'tools/text-diff' },
+    { id:'url-shortener', name:'URL Shortener (Simulated)', description:'Simulate URL shortening.', category:'text', href:'tools/url-shortener' },
+    { id:'md-to-html', name:'Markdown to HTML', description:'Convert Markdown to HTML.', category:'text', href:'tools/markdown-to-html' },
 
-    { id:'color-picker', name:'Color Picker', description:'Pick colors in HEX, RGB, HSL.', category:'image', href:'tools/color-picker/' },
-    { id:'img-to-base64', name:'Image to Base64', description:'Convert images to Base64.', category:'image', href:'tools/image-to-base64/' },
-    { id:'favicon-generator', name:'Favicon Generator', description:'Create favicons from images.', category:'image', href:'tools/favicon-generator/' },
+    { id:'color-picker', name:'Color Picker', description:'Pick colors in HEX, RGB, HSL.', category:'image', href:'tools/color-picker' },
+    { id:'img-to-base64', name:'Image to Base64', description:'Convert images to Base64.', category:'image', href:'tools/image-to-base64' },
+    { id:'favicon-generator', name:'Favicon Generator', description:'Create favicons from images.', category:'image', href:'tools/favicon-generator' },
 
-    { id:'json-formatter', name:'JSON Formatter', description:'Format and validate JSON.', category:'developer', href:'tools/json-formatter/' },
-    { id:'html-encoder', name:'HTML Encoder/Decoder', description:'Encode/Decode HTML entities.', category:'developer', href:'tools/html-encoder/' },
-    { id:'css-minifier', name:'CSS Minifier', description:'Minify CSS code.', category:'developer', href:'tools/css-minifier/' },
+    { id:'json-formatter', name:'JSON Formatter', description:'Format and validate JSON.', category:'developer', href:'tools/json-formatter' },
+    { id:'html-encoder', name:'HTML Encoder/Decoder', description:'Encode/Decode HTML entities.', category:'developer', href:'tools/html-encoder' },
+    { id:'css-minifier', name:'CSS Minifier', description:'Minify CSS code.', category:'developer', href:'tools/css-minifier' },
     { id:'js-minifier', name:'JavaScript Minifier', description:'Minify JS code.', category:'developer', href:'tools/js-minifier/' },
-    { id:'cps-tool', name:'Clicks Per Second (CPS)', description:'Test your clicking speed across durations.', category:'developer', href:'tools/cps-tool/' },
-    { id:'hash-generator', name:'Hash Generator', description:'MD5, SHA1, SHA256 (client-side).', category:'developer', href:'tools/hash-generator/' },
-    { id:'base64-tool', name:'Base64 Encoder/Decoder', description:'Encode/Decode Base64.', category:'developer', href:'tools/base64-tool/' },
+    { id:'cps-tool', name:'Clicks Per Second (CPS)', description:'Test your clicking speed across durations.', category:'developer', href:'tools/cps-tool' },
+    { id:'hash-generator', name:'Hash Generator', description:'MD5, SHA1, SHA256 (client-side).', category:'developer', href:'tools/hash-generator' },
+    { id:'base64-tool', name:'Base64 Encoder/Decoder', description:'Encode/Decode Base64.', category:'developer', href:'tools/base64-tool' },
 
     // SEO category
     { id:'seo-meta-tool', name:'SEO Meta Tool', description:'Generate and preview SEO meta tags.', category:'seo', href:'tools/seo-meta-tool/' },
