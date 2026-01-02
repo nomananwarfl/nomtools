@@ -1,15 +1,16 @@
+{
+  "trailingSlash": false,
+
   "redirects": [
     {
       "source": "/:path(.*)\\.html",
-      "destination": "/:path/",
+      "destination": "/:path",
       "permanent": true
-    }
-  ],
-
-  "rewrites": [
+    },
     {
-      "source": "/:path((?!.*\\.).*)/",
-      "destination": "/:path/index.html"
+      "source": "/:path(.+)/",
+      "destination": "/:path",
+      "permanent": true
     }
   ]
 }
