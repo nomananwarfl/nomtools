@@ -7,14 +7,5 @@
       "destination": "/:path",
       "permanent": true
     }
-  ],
-
-
-  "rewrites": [
-    {
-      "source": "/:path((?!.*\\.).*)/",
-      "destination": "/:path/index.html"
-    }
   ]
 }
-
