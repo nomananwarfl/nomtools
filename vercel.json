@@ -1,14 +1,14 @@
 {
-  "trailingSlash": true,
-  "cleanUrls": true,
+  "trailingSlash": false,
 
   "redirects": [
     {
-      "source": "/:path(.*)\\.html",
-      "destination": "/:path/",
+      "source": "/:path(.+)/",
+      "destination": "/:path",
       "permanent": true
     }
   ],
+
 
   "rewrites": [
     {
@@ -17,3 +17,4 @@
     }
   ]
 }
+
