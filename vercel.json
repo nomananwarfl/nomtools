@@ -1,22 +1,19 @@
 {
+  "trailingSlash": true,
+  "cleanUrls": true,
+
   "redirects": [
     {
       "source": "/:path(.*)\\.html",
-      "destination": "/:path",
+      "destination": "/:path/",
       "permanent": true
     }
   ],
+
   "rewrites": [
     {
-      "source": "/:path((?!.*\\.).*)",
-      "destination": "/:path.html"
+      "source": "/:path((?!.*\\.).*)/",
+      "destination": "/:path/index.html"
     }
-  "redirects": [
-{
-  "trailingSlash": true,
-  "cleanUrls": true
+  ]
 }
-  ],
-    
-}
-
